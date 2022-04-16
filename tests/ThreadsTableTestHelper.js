@@ -8,11 +8,11 @@ const ThreadsTableTestHelper = {
     id = 'thread-h_2FkLZhtgBKY2kh4CC02',
     title = 'sebuah thread',
     body = 'sebuah body thread',
-    publisher = 'dicoding',
+    owner = 'user-123',
   }) {
     const query = {
       text: 'INSERT INTO threads(id, title, body, publisher) VALUES($1, $2, $3, $4)',
-      values: [id, title, body, publisher],
+      values: [id, title, body, owner],
     };
 
     await pool.query(query);

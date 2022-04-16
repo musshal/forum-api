@@ -6,6 +6,14 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
+    comment_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    publisher: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
     content: {
       type: 'TEXT',
       notNull: true,
@@ -15,11 +23,18 @@ exports.up = (pgm) => {
       notNull: true,
       default: pgm.func('current_timestamp'),
     },
-    publisher: {
-      type: 'VARCHAR(50)',
+    is_delete: {
+      type: 'BOOLEAN',
       notNull: true,
+      default: false,
     },
   });
+
+  pgm.addConstraint(
+    'replies',
+    'fk_replies.comment_id_comments.id',
+    'FOREIGN KEY(comment_id) REFERENCES comments(id) ON DELETE CASCADE',
+  );
 
   pgm.addConstraint(
     'replies',
@@ -29,5 +44,7 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
+  pgm.dropConstraint('replies', 'fk_replies.comment_id_comments.id');
+  pgm.dropConstraint('replies', 'fk_replies.publisher_users.id');
   pgm.dropTable('replies');
 };

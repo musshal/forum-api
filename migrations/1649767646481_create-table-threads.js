@@ -6,6 +6,10 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
+    publisher: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
     title: {
       type: 'TEXT',
       notNull: true,
@@ -19,10 +23,6 @@ exports.up = (pgm) => {
       notNull: true,
       default: pgm.func('current_timestamp'),
     },
-    publisher: {
-      type: 'VARCHAR(50)',
-      notNull: true,
-    },
   });
 
   pgm.addConstraint(
@@ -33,5 +33,6 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
+  pgm.dropConstraint('threads', 'fk_threads.publisher_users.id');
   pgm.dropTable('threads');
 };
