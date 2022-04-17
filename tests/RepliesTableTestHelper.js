@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+const { mapRepliesDbToModel } = require('../src/Commons/exceptions/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const RepliesTableTestHelper = {
@@ -17,15 +18,27 @@ const RepliesTableTestHelper = {
     await pool.query(query);
   },
 
-  async findReplyById(id) {
+  async getRepliesByThreadId(threadId) {
     const query = {
-      text: 'SELECT * FROM replies WHERE id = $1',
-      values: [id],
+      text: `SELECT replies.id, replies.comment_id, replies.content, replies.date, users.username
+      FROM replies
+      INNER JOIN users ON replies.publisher = users.id
+      WHERE thread_id = $1`,
+      values: [threadId],
     };
 
     const result = await pool.query(query);
 
-    return result.rows;
+    return result.rows.map(mapRepliesDbToModel);
+  },
+
+  async deleteReplyById(id) {
+    const query = {
+      text: 'UPDATE replies SET is_delete = true WHERE id = $1',
+      values: [id],
+    };
+
+    await pool.query(query);
   },
 
   async cleanTable() {

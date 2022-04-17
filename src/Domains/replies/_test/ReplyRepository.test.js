@@ -9,7 +9,7 @@ describe('ReplyRepository interface', () => {
     await expect(replyRepository.addReply({})).rejects.toThrowError(
       'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
-    await expect(replyRepository.getRepliesByCommentId('')).rejects.toThrowError(
+    await expect(replyRepository.getRepliesByThreadId('')).rejects.toThrowError(
       'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
     await expect(replyRepository.deleteReplyById('')).rejects.toThrowError(

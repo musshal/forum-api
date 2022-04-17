@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+const { mapCommentsDbToModel } = require('../src/Commons/exceptions/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const CommentsTableTestHelper = {
@@ -17,15 +18,27 @@ const CommentsTableTestHelper = {
     await pool.query(query);
   },
 
-  async findCommentById(id) {
+  async getCommentsByThreadId(threadId) {
     const query = {
-      text: 'SELECT * FROM comments WHERE id = $1',
-      values: [id],
+      text: `SELECT comments.id, comments.date, comments.content, users.username
+      FROM comments
+      INNER JOIN users ON comments.publisher = users.id
+      WHERE thread_id = $1`,
+      values: [threadId],
     };
 
     const result = await pool.query(query);
 
-    return result.rows;
+    return result.rows.map(mapCommentsDbToModel);
+  },
+
+  async deleteCommentById(id) {
+    const query = {
+      text: 'UPDATE comments SET is_delete = true WHERE id = $1',
+      values: [id],
+    };
+
+    await pool.query(query);
   },
 
   async cleanTable() {

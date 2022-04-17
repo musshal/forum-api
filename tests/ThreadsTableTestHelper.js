@@ -1,7 +1,11 @@
 /* istanbul ignore file */
 
+const {
+  mapThreadsDbToModel,
+  mapCommentsDbToModel,
+  mapRepliesDbToModel,
+} = require('../src/Commons/exceptions/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
-const { cleanTable } = require('./UsersTableTestHelper');
 
 const ThreadsTableTestHelper = {
   async addThread({
@@ -18,15 +22,47 @@ const ThreadsTableTestHelper = {
     await pool.query(query);
   },
 
-  async findThreadById(id) {
-    const query = {
-      text: 'SELECT * FROM threads WHERE id = $1',
-      values: [id],
-    };
+  async getThreadById(id) {
+    const query = [
+      {
+        text: `SELECT threads.id, threads.title, threads.body, threads.date, users.username
+        FROM threads
+        INNER JOIN users ON threads.publisher = users.id
+        WHERE id = $1`,
+        values: [id],
+      },
+      {
+        text: `SELECT comments.id, comments.date, comments.content, users.username
+        FROM comments
+        INNER JOIN users ON comments.publisher = users.id
+        WHERE thread_id = $1`,
+        values: [id],
+      },
+      {
+        text: `SELECT replies.id, replies.comment_id, replies.content, replies.date, users.username
+        FROM replies
+        INNER JOIN users ON replies.publisher = users.id
+        WHERE thread_id = $1`,
+        values: [id],
+      },
+    ];
 
-    const result = await pool.query(query);
+    const threadResult = await pool.query(query[0]);
+    const commentsResult = await pool.query(query[1]);
+    const repliesResult = await pool.query(query[2]);
 
-    return result.rows;
+    const thread = threadResult.rows.map(mapThreadsDbToModel)[0];
+
+    const replies = (commentId) => repliesResult.rows
+      .filter((reply) => reply.comment_id === commentId)
+      .map(mapRepliesDbToModel);
+    const comments = commentsResult.rows
+      .map((comment) => ({ ...comment, replies: replies(comment.id) }))
+      .map(mapCommentsDbToModel);
+
+    thread.comments = comments;
+
+    return thread;
   },
 
   async cleanTable() {
