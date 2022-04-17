@@ -5,7 +5,7 @@ const { cleanTable } = require('./UsersTableTestHelper');
 
 const ThreadsTableTestHelper = {
   async addThread({
-    id = 'thread-h_2FkLZhtgBKY2kh4CC02',
+    id = 'thread-123',
     title = 'sebuah thread',
     body = 'sebuah body thread',
     owner = 'user-123',

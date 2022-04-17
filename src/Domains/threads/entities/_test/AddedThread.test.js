@@ -4,8 +4,8 @@ describe('AddedThread entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     // Arrange
     const payload = {
+      id: 'thread-124',
       title: 'sebuah thread',
-      body: 'sebuah body thread',
     };
 
     // Action and Assert
@@ -19,7 +19,6 @@ describe('AddedThread entities', () => {
     const payload = {
       id: 123,
       title: 'sebuah thread',
-      body: {},
       owner: 'user-123',
     };
 
@@ -34,7 +33,6 @@ describe('AddedThread entities', () => {
     const payload = {
       id: 'thread-123',
       title: 'sebuah thread',
-      body: 'sebuah body thread',
       owner: 'user-123',
     };
 
@@ -44,7 +42,6 @@ describe('AddedThread entities', () => {
     // Assert
     expect(addedThread.id).toEqual(payload.id);
     expect(addedThread.title).toEqual(payload.title);
-    expect(addedThread.body).toEqual(payload.body);
     expect(addedThread.owner).toEqual(payload.owner);
   });
 });

@@ -4,7 +4,7 @@ describe('DetailReply entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     const payload = {
       username: 'dicoding',
-      content: 'sebuah comment',
+      content: 'sebuah balasan',
     };
 
     // Action and Assert
@@ -17,10 +17,10 @@ describe('DetailReply entities', () => {
     // Arrange
     const payload = {
       id: 123,
+      commentId: {},
       content: {},
       date: 2022,
       username: 'dicoding',
-      isDelete: 'false',
     };
 
     // Action and Assert
@@ -33,10 +33,10 @@ describe('DetailReply entities', () => {
     // Arrange
     const payload = {
       id: 'reply-123',
+      commentId: 'comment-123',
       content: 'sebuah balasan',
-      date: '2022-04-14T00:41:09.775Z',
+      date: '2022',
       username: 'dicoding',
-      isDelete: false,
     };
 
     // Action
@@ -44,9 +44,9 @@ describe('DetailReply entities', () => {
 
     // Assert
     expect(detailReply.id).toEqual(payload.id);
+    expect(detailReply.commentId).toEqual(payload.commentId);
     expect(detailReply.content).toEqual(payload.content);
     expect(detailReply.date).toEqual(payload.date);
     expect(detailReply.username).toEqual(payload.username);
-    expect(detailReply.isDelete).toEqual(payload.isDelete);
   });
 });

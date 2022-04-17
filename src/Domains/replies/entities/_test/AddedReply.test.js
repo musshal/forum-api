@@ -4,7 +4,7 @@ describe('AddedReply entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     // Arrange
     const payload = {
-      content: 'sebuah comment',
+      content: 'sebuah balasan',
       owner: 'user-123',
     };
 
@@ -18,7 +18,7 @@ describe('AddedReply entities', () => {
     // Arrange
     const payload = {
       id: 123,
-      content: 'sebuah comment',
+      content: 'sebuah balasan',
       owner: {},
     };
 

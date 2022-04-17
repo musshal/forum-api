@@ -3,9 +3,7 @@ const NewReply = require('../NewReply');
 describe('NewReply entities', () => {
   it('should throw error if payload did not contain needed property', () => {
     // Arrange
-    const payload = {
-      content: 'sebuah balasan',
-    };
+    const payload = {};
 
     // Action & Assert
     expect(() => new NewReply(payload)).toThrowError(
@@ -17,7 +15,6 @@ describe('NewReply entities', () => {
     // Arrange
     const payload = {
       content: {},
-      owner: 'user-123',
     };
 
     // Action and Assert
@@ -29,16 +26,13 @@ describe('NewReply entities', () => {
   it('should create NewReply object correctly', () => {
     // Arrange
     const payload = {
-      content: 'sebuah comment',
-      owner: 'user-123',
+      content: 'sebuah balasan',
     };
 
     // Action
     const newReply = new NewReply(payload);
 
     // Assert
-    expect(newReply).toBeInstanceOf(NewReply);
     expect(newReply.content).toEqual(payload.content);
-    expect(newReply.owner).toEqual(payload.owner);
   });
 });

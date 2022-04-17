@@ -3,9 +3,7 @@ const NewComment = require('../NewComment');
 describe('NewComment entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     // Arrange
-    const payload = {
-      content: 'sebuah comment',
-    };
+    const payload = {};
 
     // Action and Assert
     expect(() => new NewComment(payload)).toThrowError(
@@ -17,7 +15,6 @@ describe('NewComment entities', () => {
     // Arrange
     const payload = {
       content: {},
-      owner: 'user-123',
     };
 
     // Action and Assert
@@ -30,15 +27,12 @@ describe('NewComment entities', () => {
     // Arrange
     const payload = {
       content: 'sebuah comment',
-      owner: 'user-123',
     };
 
     // Action
     const newComment = new NewComment(payload);
 
     // Assert
-    expect(newComment).toBeInstanceOf(NewComment);
     expect(newComment.content).toEqual(payload.content);
-    expect(newComment.owner).toEqual(payload.owner);
   });
 });
