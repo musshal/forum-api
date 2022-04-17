@@ -1,9 +1,7 @@
 const {
   mapRepliesDbToModel,
   mapCommentsDbToModel,
-  mapThreadsDbToModel,
 } = require('../../Commons/exceptions/utils');
-const DetailThread = require('../../Domains/threads/entities/DetailThread');
 
 class GetThreadUseCase {
   constructor({ threadRepository, commentRepository, replyRepository }) {
