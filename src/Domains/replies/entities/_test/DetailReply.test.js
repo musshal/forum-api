@@ -21,6 +21,7 @@ describe('DetailReply entities', () => {
       content: {},
       date: 2022,
       username: 'dicoding',
+      isDelete: false,
     };
 
     // Action and Assert
@@ -37,6 +38,7 @@ describe('DetailReply entities', () => {
       content: 'sebuah balasan',
       date: '2022',
       username: 'dicoding',
+      isDelete: false,
     };
 
     // Action
@@ -48,5 +50,6 @@ describe('DetailReply entities', () => {
     expect(detailReply.content).toEqual(payload.content);
     expect(detailReply.date).toEqual(payload.date);
     expect(detailReply.username).toEqual(payload.username);
+    expect(detailReply.isDelete).toEqual(payload.isDelete);
   });
 });

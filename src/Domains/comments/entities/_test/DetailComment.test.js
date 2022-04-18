@@ -21,6 +21,7 @@ describe('DetailComment entities', () => {
       date: 2022,
       replies: 'sebuah balasan',
       content: {},
+      isDelete: false,
     };
 
     // Action and Assert
@@ -37,6 +38,7 @@ describe('DetailComment entities', () => {
       date: '2022-04-14T00:41:09.775Z',
       replies: [],
       content: 'sebuah comment',
+      isDelete: false,
     };
 
     // Action
@@ -48,5 +50,6 @@ describe('DetailComment entities', () => {
     expect(detailComment.date).toEqual(payload.date);
     expect(detailComment.replies).toEqual(payload.replies);
     expect(detailComment.content).toEqual(payload.content);
+    expect(detailComment.isDelete).toEqual(payload.isDelete);
   });
 });

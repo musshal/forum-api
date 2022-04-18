@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-const { mapCommentsDbToModel } = require('../src/Commons/exceptions/utils');
+const { mapCommentsDbToModel } = require('../src/Commons/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const CommentsTableTestHelper = {

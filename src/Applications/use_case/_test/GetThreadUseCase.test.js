@@ -13,14 +13,16 @@ describe('GetThreadUseCase', () => {
       threadId: 'thread-123',
     };
 
-    const expectedDetailThread = new DetailThread({
-      id: 'thread-123',
-      title: 'sebuah thread',
-      body: 'sebuah body thread',
-      date: '2022',
-      username: 'dicoding',
-      comments: [],
-    });
+    const retrievedThread = [
+      {
+        id: 'thread-123',
+        title: 'sebuah thread',
+        body: 'sebuah body thread',
+        date: '2022',
+        username: 'dicoding',
+        comments: [],
+      },
+    ];
 
     const retrievedComments = [
       new DetailComment({
@@ -29,6 +31,7 @@ describe('GetThreadUseCase', () => {
         date: '2022',
         replies: [],
         content: 'sebuah comment A',
+        isDelete: false,
       }),
       new DetailComment({
         id: 'comment-234',
@@ -36,6 +39,7 @@ describe('GetThreadUseCase', () => {
         date: '2022',
         replies: [],
         content: 'sebuah comment B',
+        isDelete: false,
       }),
     ];
 
@@ -46,6 +50,7 @@ describe('GetThreadUseCase', () => {
         content: 'sebuah balasan C',
         date: '2022',
         username: 'user C',
+        isDelete: false,
       }),
       new DetailReply({
         id: 'reply-234',
@@ -53,16 +58,40 @@ describe('GetThreadUseCase', () => {
         content: 'sebuah balasan D',
         date: '2022',
         username: 'user D',
+        isDelete: false,
       }),
     ];
 
-    const { commentId: commentIdA, ...filteredDetailReplyA } = retrievedReplies[0];
-    const { commentId: commentIdB, ...filteredDetailReplyB } = retrievedReplies[1];
+    const { isDelete: isDeleteCommentA, ...filteredDetailCommentA } = retrievedComments[0];
+    const { isDelete: isDeleteCommentB, ...filteredDetailCommentB } = retrievedComments[1];
 
-    const expectedCommentReplies = [
-      { ...retrievedComments[0], replies: [filteredDetailReplyA] },
-      { ...retrievedComments[1], replies: [filteredDetailReplyB] },
+    const {
+      isDelete: isDeleteReplyA,
+      ...filteredDetailReplyA
+    } = retrievedReplies[0];
+    const {
+      isDelete: isDeleteReplyB,
+      ...filteredDetailReplyB
+    } = retrievedReplies[1];
+
+    const expectedDetailReplies = [
+      { ...filteredDetailReplyA },
+      { ...filteredDetailReplyB },
     ];
+
+    const expectedDetailComments = [
+      { ...filteredDetailCommentA, replies: [filteredDetailReplyA] },
+      { ...filteredDetailCommentB, replies: [filteredDetailReplyB] },
+    ];
+
+    const expectedDetailThread = new DetailThread({
+      id: 'thread-123',
+      title: 'sebuah thread',
+      body: 'sebuah body thread',
+      date: '2022',
+      username: 'dicoding',
+      comments: [expectedDetailComments],
+    });
 
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
@@ -70,13 +99,13 @@ describe('GetThreadUseCase', () => {
 
     mockThreadRepository.getThreadById = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(expectedDetailThread));
+      .mockImplementation(() => Promise.resolve(retrievedThread));
     mockCommentRepository.getCommentsByThreadId = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(retrievedComments));
+      .mockImplementation(() => Promise.resolve(expectedDetailComments));
     mockReplyRepository.getRepliesByThreadId = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(retrievedReplies));
+      .mockImplementation(() => Promise.resolve(expectedDetailReplies));
 
     const getThreadUseCase = new GetThreadUseCase({
       threadRepository: mockThreadRepository,
@@ -88,11 +117,7 @@ describe('GetThreadUseCase', () => {
     const useCaseResult = await getThreadUseCase.execute(useCaseParam);
 
     // Assert
-    expect(useCaseResult).toEqual(
-      new DetailThread({
-        ...expectedDetailThread,
-      }),
-    );
+    expect(useCaseResult).toEqual(new DetailThread(expectedDetailThread));
     expect(mockThreadRepository.getThreadById).toBeCalledWith(
       useCaseParam.threadId,
     );

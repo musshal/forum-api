@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-const { mapRepliesDbToModel } = require('../src/Commons/exceptions/utils');
+const { mapRepliesDbToModel } = require('../src/Commons/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const RepliesTableTestHelper = {

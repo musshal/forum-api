@@ -4,7 +4,7 @@ const {
   mapThreadsDbToModel,
   mapCommentsDbToModel,
   mapRepliesDbToModel,
-} = require('../src/Commons/exceptions/utils');
+} = require('../src/Commons/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const ThreadsTableTestHelper = {

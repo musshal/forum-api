@@ -9,12 +9,13 @@ describe('AddThreadUseCase', () => {
     const useCasePayload = {
       title: 'sebuah thread',
       body: 'sebuah body thread',
+      owner: 'user-123',
     };
 
     const expectedAddedThread = new AddedThread({
       id: 'thread-123',
       title: useCasePayload.title,
-      owner: 'user-123',
+      owner: useCasePayload.owner,
     });
 
     /** creating dependency of use case */
