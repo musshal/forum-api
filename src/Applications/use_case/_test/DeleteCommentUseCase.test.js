@@ -1,4 +1,5 @@
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const AuthenticationRepository = require('../../../Domains/authentications/AuthenticationRepository');
 const AuthenticationTokenManager = require('../../security/AuthenticationTokenManager');
 const DeleteCommentUseCase = require('../DeleteCommentUseCase');
@@ -25,6 +26,7 @@ describe('DeleteCommentUseCase', () => {
 
     /** orchestrating dependency of use case */
     const mockCommentRepository = new CommentRepository();
+    const mockThreadRepository = new ThreadRepository();
     const mockAuthenticationRepository = new AuthenticationRepository();
     const mockAuthenticationTokenManager = new AuthenticationTokenManager();
 
@@ -37,10 +39,16 @@ describe('DeleteCommentUseCase', () => {
       .mockImplementation(() => Promise.resolve());
     mockAuthenticationTokenManager.decodePayload = jest
       .fn()
-      .mockImplementation(() => Promise.resolve({ id: 'user-123' }));
+      .mockImplementation(() => Promise.resolve({ id: userIdFromAccessToken }));
+    mockThreadRepository.verifyExistingThread = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(useCaseParam.threadId));
+    mockCommentRepository.verifyExistingComment = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(useCaseParam.commentId));
     mockCommentRepository.verifyCommentPublisher = jest
       .fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(useCaseParam.commentId, userIdFromAccessToken));
     mockCommentRepository.deleteCommentById = jest
       .fn()
       .mockImplementation(() => Promise.resolve(expectedDeletedComment));
@@ -48,6 +56,7 @@ describe('DeleteCommentUseCase', () => {
     /** creating use case instance */
     const deleteCommentUseCase = new DeleteCommentUseCase({
       commentRepository: mockCommentRepository,
+      threadRepository: mockThreadRepository,
       authenticationRepository: mockAuthenticationRepository,
       authenticationTokenManager: mockAuthenticationTokenManager,
     });
@@ -66,6 +75,12 @@ describe('DeleteCommentUseCase', () => {
     expect(
       mockAuthenticationTokenManager.verifyRefreshToken(),
     ).resolves.toBeUndefined();
+    expect(mockThreadRepository.verifyExistingThread).toBeCalledWith(
+      useCaseParam.threadId,
+    );
+    expect(mockCommentRepository.verifyExistingComment).toBeCalledWith(
+      useCaseParam.commentId,
+    );
     expect(mockCommentRepository.verifyCommentPublisher).toBeCalledWith(
       useCaseParam.commentId,
       userIdFromAccessToken,

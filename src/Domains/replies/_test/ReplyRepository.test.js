@@ -18,5 +18,8 @@ describe('ReplyRepository interface', () => {
     await expect(replyRepository.verifyReplyPublisher('')).rejects.toThrowError(
       'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
+    await expect(replyRepository.verifyExistingReply('')).rejects.toThrowError(
+      'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED',
+    );
   });
 });

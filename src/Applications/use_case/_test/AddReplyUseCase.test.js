@@ -1,6 +1,8 @@
 const NewReply = require('../../../Domains/replies/entities/NewReply');
 const AddedReply = require('../../../Domains/replies/entities/AddedReply');
 const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
+const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
+const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const AuthenticationRepository = require('../../../Domains/authentications/AuthenticationRepository');
 const AuthenticationTokenManager = require('../../security/AuthenticationTokenManager');
 const AddReplyUseCase = require('../AddReplyUseCase');
@@ -16,6 +18,11 @@ describe('AddReplyUseCase', () => {
 
     const userIdFromAccessToken = 'user-123';
 
+    const useCaseParam = {
+      threadId: 'thread-123',
+      commentId: 'comment-123',
+    };
+
     const useCasePayload = {
       content: 'sebuah balasan',
     };
@@ -28,6 +35,8 @@ describe('AddReplyUseCase', () => {
 
     /** mocking dependencies for use case */
     const mockReplyRepository = new ReplyRepository();
+    const mockThreadRepository = new ThreadRepository();
+    const mockCommentRepository = new CommentRepository();
     const mockAuthenticationRepository = new AuthenticationRepository();
     const mockAuthenticationTokenManager = new AuthenticationTokenManager();
 
@@ -40,7 +49,13 @@ describe('AddReplyUseCase', () => {
       .mockImplementation(() => Promise.resolve());
     mockAuthenticationTokenManager.decodePayload = jest
       .fn()
-      .mockImplementation(() => Promise.resolve({ id: 'user-123' }));
+      .mockImplementation(() => Promise.resolve({ id: userIdFromAccessToken }));
+    mockThreadRepository.verifyExistingThread = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(useCaseParam.threadId));
+    mockCommentRepository.verifyExistingComment = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(useCaseParam.commentId));
     mockReplyRepository.addReply = jest
       .fn()
       .mockImplementation(() => Promise.resolve(expectedAddedReply));
@@ -48,6 +63,8 @@ describe('AddReplyUseCase', () => {
     /** creating use case instance */
     const addReplyUseCase = new AddReplyUseCase({
       replyRepository: mockReplyRepository,
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
       authenticationRepository: mockAuthenticationRepository,
       authenticationTokenManager: mockAuthenticationTokenManager,
     });
@@ -55,6 +72,7 @@ describe('AddReplyUseCase', () => {
     // Action
     const addedReply = await addReplyUseCase.execute(
       useCaseHeader,
+      useCaseParam,
       useCasePayload,
     );
 
@@ -68,6 +86,12 @@ describe('AddReplyUseCase', () => {
     ).resolves.toBeUndefined();
     expect(mockAuthenticationTokenManager.decodePayload).toBeCalledWith(
       accessToken,
+    );
+    expect(mockThreadRepository.verifyExistingThread).toBeCalledWith(
+      useCaseParam.threadId,
+    );
+    expect(mockCommentRepository.verifyExistingComment).toBeCalledWith(
+      useCaseParam.commentId,
     );
     expect(mockReplyRepository.addReply).toBeCalledWith(
       new NewReply({ content: useCasePayload.content }),

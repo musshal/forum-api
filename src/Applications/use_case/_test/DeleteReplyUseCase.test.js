@@ -1,4 +1,6 @@
 const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
+const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
+const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const AuthenticationRepository = require('../../../Domains/authentications/AuthenticationRepository');
 const AuthenticationTokenManager = require('../../security/AuthenticationTokenManager');
 const DeleteReplyUseCase = require('../DeleteReplyUseCase');
@@ -26,6 +28,8 @@ describe('DeleteReplyUseCase', () => {
 
     /** orchestrating dependency of use case */
     const mockReplyRepository = new ReplyRepository();
+    const mockThreadRepository = new ThreadRepository();
+    const mockCommentRepository = new CommentRepository();
     const mockAuthenticationRepository = new AuthenticationRepository();
     const mockAuthenticationTokenManager = new AuthenticationTokenManager();
 
@@ -38,10 +42,19 @@ describe('DeleteReplyUseCase', () => {
       .mockImplementation(() => Promise.resolve());
     mockAuthenticationTokenManager.decodePayload = jest
       .fn()
-      .mockImplementation(() => Promise.resolve({ id: 'user-123' }));
+      .mockImplementation(() => Promise.resolve({ id: userIdFromAccessToken }));
+    mockThreadRepository.verifyExistingThread = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(useCaseParam.threadId));
+    mockCommentRepository.verifyExistingComment = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(useCaseParam.commentId));
+    mockReplyRepository.verifyExistingReply = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(useCaseParam.replyId));
     mockReplyRepository.verifyReplyPublisher = jest
       .fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(useCaseParam.replyId, userIdFromAccessToken));
     mockReplyRepository.deleteReplyById = jest
       .fn()
       .mockImplementation(() => Promise.resolve(expectedDeletedReply));
@@ -49,6 +62,8 @@ describe('DeleteReplyUseCase', () => {
     /** creating use case instance */
     const deleteReplyUseCase = new DeleteReplyUseCase({
       replyRepository: mockReplyRepository,
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
       authenticationRepository: mockAuthenticationRepository,
       authenticationTokenManager: mockAuthenticationTokenManager,
     });
@@ -67,6 +82,15 @@ describe('DeleteReplyUseCase', () => {
     expect(
       mockAuthenticationTokenManager.verifyRefreshToken(),
     ).resolves.toBeUndefined();
+    expect(mockThreadRepository.verifyExistingThread).toBeCalledWith(
+      useCaseParam.threadId,
+    );
+    expect(mockCommentRepository.verifyExistingComment).toBeCalledWith(
+      useCaseParam.commentId,
+    );
+    expect(mockReplyRepository.verifyExistingReply).toBeCalledWith(
+      useCaseParam.replyId,
+    );
     expect(mockReplyRepository.verifyReplyPublisher).toBeCalledWith(
       useCaseParam.replyId,
       userIdFromAccessToken,

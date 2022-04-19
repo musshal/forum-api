@@ -41,7 +41,7 @@ describe('AddThreadUseCase', () => {
       .mockImplementation(() => Promise.resolve());
     mockAuthenticationTokenManager.decodePayload = jest
       .fn()
-      .mockImplementation(() => Promise.resolve({ id: 'user-123' }));
+      .mockImplementation(() => Promise.resolve({ id: userIdFromAccessToken }));
     mockThreadRepository.addThread = jest
       .fn()
       .mockImplementation(() => Promise.resolve(expectedAddedThread));
