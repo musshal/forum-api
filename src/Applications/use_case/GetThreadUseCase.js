@@ -23,7 +23,7 @@ class GetThreadUseCase {
       .map((reply) => ({
         id: reply.id,
         commentId: reply.commentId,
-        content: reply.isDelete ? '**balasan telah dihapus**' : reply.content,
+        content: reply.content,
         date: reply.date,
         username: reply.username,
       }));
@@ -33,9 +33,7 @@ class GetThreadUseCase {
       username: comment.username,
       date: comment.date,
       replies: replies(comment.id),
-      content: comment.isDelete
-        ? '**komentar telah dihapus**'
-        : comment.content,
+      content: comment.content,
     }));
 
     const thread = {

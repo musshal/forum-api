@@ -29,7 +29,7 @@ describe('GetThreadUseCase', () => {
         date: '2022',
         replies: [],
         content: 'sebuah comment A',
-        isDelete: false,
+        isDelete: true,
       }),
       new DetailComment({
         id: 'comment-234',
@@ -39,6 +39,21 @@ describe('GetThreadUseCase', () => {
         content: 'sebuah comment B',
         isDelete: false,
       }),
+    ];
+
+    const expectedRetrieveComments = [
+      {
+        ...retrievedComments[0],
+        content: retrievedComments[0].isDelete
+          ? '**komentar telah dihapus**'
+          : retrievedComments[0].content,
+      },
+      {
+        ...retrievedComments[1],
+        content: retrievedComments[1].isDelete
+          ? '**komentar telah dihapus**'
+          : retrievedComments[1].content,
+      },
     ];
 
     const retrievedReplies = [
@@ -56,15 +71,30 @@ describe('GetThreadUseCase', () => {
         content: 'sebuah balasan D',
         date: '2022',
         username: 'user D',
-        isDelete: false,
+        isDelete: true,
       }),
     ];
 
-    const { isDelete: isDeleteCommentA, ...filteredDetailCommentA } = retrievedComments[0];
-    const { isDelete: isDeleteCommentB, ...filteredDetailCommentB } = retrievedComments[1];
+    const expectedRetrieveReplies = [
+      {
+        ...retrievedReplies[0],
+        content: retrievedReplies[0].isDelete
+          ? '**balasan telah dihapus**'
+          : retrievedReplies[0].content,
+      },
+      {
+        ...retrievedReplies[1],
+        content: retrievedReplies[1].isDelete
+          ? '**balasan telah dihapus**'
+          : retrievedReplies[1].content,
+      },
+    ];
 
-    const { isDelete: isDeleteReplyA, ...filteredDetailReplyA } = retrievedReplies[0];
-    const { isDelete: isDeleteReplyB, ...filteredDetailReplyB } = retrievedReplies[1];
+    const { isDelete: isDeleteCommentA, ...filteredDetailCommentA } = expectedRetrieveComments[0];
+    const { isDelete: isDeleteCommentB, ...filteredDetailCommentB } = expectedRetrieveComments[1];
+
+    const { isDelete: isDeleteReplyA, ...filteredDetailReplyA } = expectedRetrieveReplies[0];
+    const { isDelete: isDeleteReplyB, ...filteredDetailReplyB } = expectedRetrieveReplies[1];
 
     const expectedDetailReplies = [
       { ...filteredDetailReplyA },
