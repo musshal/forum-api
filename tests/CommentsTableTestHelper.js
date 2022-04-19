@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 
-const { mapCommentsDbToModel } = require('../src/Commons/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const CommentsTableTestHelper = {
@@ -29,7 +28,7 @@ const CommentsTableTestHelper = {
 
     const result = await pool.query(query);
 
-    return result.rows.map(mapCommentsDbToModel);
+    return result.rows;
   },
 
   async deleteCommentById(id) {

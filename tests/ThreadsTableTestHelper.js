@@ -1,8 +1,6 @@
 /* istanbul ignore file */
 
 const {
-  mapThreadsDbToModel,
-  mapCommentsDbToModel,
   mapRepliesDbToModel,
 } = require('../src/Commons/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
@@ -47,21 +45,22 @@ const ThreadsTableTestHelper = {
       },
     ];
 
-    const threadResult = await pool.query(query[0]);
+    const threadResult = await pool.query(query[0])[0];
     const commentsResult = await pool.query(query[1]);
     const repliesResult = await pool.query(query[2]);
 
     const replies = (commentId) => repliesResult.rows
       .filter((reply) => reply.comment_id === commentId)
       .map(mapRepliesDbToModel);
-    const comments = commentsResult.rows
-      .map((comment) => ({ ...comment, replies: replies(comment.id) }))
-      .map(mapCommentsDbToModel);
+    const comments = commentsResult.rows.map((comment) => ({
+      ...comment,
+      replies: replies(comment.id),
+    }));
 
-    const thread = threadResult.rows
-      .map(mapThreadsDbToModel)
-      .map((t) => ({ ...t, comments }));
-
+    const thread = {
+      ...threadResult,
+      comments: [comments],
+    };
     return thread;
   },
 

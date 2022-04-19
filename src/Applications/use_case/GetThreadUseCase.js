@@ -1,8 +1,3 @@
-const {
-  mapCommentsDbToModel,
-  mapThreadsDbToModel,
-  mapReplies,
-} = require('../../Commons/utils');
 const DetailThread = require('../../Domains/threads/entities/DetailThread');
 
 class GetThreadUseCase {
@@ -25,27 +20,30 @@ class GetThreadUseCase {
 
     const replies = (commentId) => repliesResult
       .filter((reply) => reply.commentId === commentId)
-      .map((r) => ({
-        ...r,
-        content: r.isDelete ? '**balasan telah dihapus**' : r.content,
-      }))
-      .map(mapReplies);
+      .map((reply) => ({
+        id: reply.id,
+        commentId: reply.commentId,
+        content: reply.isDelete ? '**balasan telah dihapus**' : reply.content,
+        date: reply.date,
+        username: reply.username,
+      }));
 
-    const comments = commentsResult
-      .map((comment) => ({
-        ...comment,
-        content: comment.isDelete
-          ? '**komentar telah dihapus**'
-          : comment.content,
-        replies: replies(comment.id),
-      }))
-      .map(mapCommentsDbToModel);
+    const comments = commentsResult.map((comment) => ({
+      id: comment.id,
+      username: comment.username,
+      date: comment.date,
+      replies: replies(comment.id),
+      content: comment.isDelete
+        ? '**komentar telah dihapus**'
+        : comment.content,
+    }));
 
-    const thread = threadResult
-      .map(mapThreadsDbToModel)
-      .map((t) => ({ ...t, comments: [comments] }))[0];
+    const thread = {
+      ...threadResult,
+      comments: [comments],
+    };
 
-    return new DetailThread({ ...thread });
+    return new DetailThread(thread);
   }
 }
 
