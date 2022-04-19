@@ -1,19 +1,21 @@
-class DeleteCommentUseCase {
+class DeleteReplyUseCase {
   constructor({
-    commentRepository,
+    replyRepository,
     authenticationRepository,
     authenticationTokenManager,
   }) {
-    this._commentRepository = commentRepository;
+    this._replyRepository = replyRepository;
     this._authenticationRepository = authenticationRepository;
     this._authenticationTokenManager = authenticationTokenManager;
   }
 
   async execute(useCaseHeader, useCaseParam) {
     const { authorization } = useCaseHeader;
-    const { commentId } = useCaseParam;
+    const { replyId } = useCaseParam;
 
-    const accessToken = await this._authenticationRepository.checkAvailabilityToken(authorization);
+    const accessToken = await this._authenticationRepository.checkAvailabilityToken(
+      authorization,
+    );
 
     await this._authenticationTokenManager.verifyRefreshToken(accessToken);
 
@@ -21,10 +23,10 @@ class DeleteCommentUseCase {
       accessToken,
     );
 
-    await this._commentRepository.verifyCommentPublisher(commentId, owner);
+    await this._replyRepository.verifyReplyPublisher(replyId, owner);
 
-    return this._commentRepository.deleteCommentById(commentId);
+    return this._replyRepository.deleteReplyById(replyId);
   }
 }
 
-module.exports = DeleteCommentUseCase;
+module.exports = DeleteReplyUseCase;

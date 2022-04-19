@@ -1,12 +1,12 @@
-const NewComment = require('../../Domains/comments/entities/NewComment');
+const NewReply = require('../../Domains/replies/entities/NewReply');
 
-class AddCommentUseCase {
+class AddReplyUseCase {
   constructor({
-    commentRepository,
+    replyRepository,
     authenticationRepository,
     authenticationTokenManager,
   }) {
-    this._commentRepository = commentRepository;
+    this._replyRepository = replyRepository;
     this._authenticationRepository = authenticationRepository;
     this._authenticationTokenManager = authenticationTokenManager;
   }
@@ -15,7 +15,9 @@ class AddCommentUseCase {
     const { authorization } = useCaseHeader;
     const { content } = useCasePayload;
 
-    const accessToken = await this._authenticationRepository.checkAvailabilityToken(authorization);
+    const accessToken = await this._authenticationRepository.checkAvailabilityToken(
+      authorization,
+    );
 
     await this._authenticationTokenManager.verifyRefreshToken(accessToken);
 
@@ -23,10 +25,10 @@ class AddCommentUseCase {
       accessToken,
     );
 
-    const newComment = new NewComment({ content });
+    const newReply = new NewReply({ content });
 
-    return this._commentRepository.addComment(newComment, owner);
+    return this._replyRepository.addReply(newReply, owner);
   }
 }
 
-module.exports = AddCommentUseCase;
+module.exports = AddReplyUseCase;

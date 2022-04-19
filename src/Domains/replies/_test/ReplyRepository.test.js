@@ -15,5 +15,8 @@ describe('ReplyRepository interface', () => {
     await expect(replyRepository.deleteReplyById('')).rejects.toThrowError(
       'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
+    await expect(replyRepository.verifyReplyPublisher('')).rejects.toThrowError(
+      'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED',
+    );
   });
 });

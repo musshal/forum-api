@@ -1,12 +1,12 @@
-const NewThread = require('../../../Domains/threads/entities/NewThread');
-const AddedThread = require('../../../Domains/threads/entities/AddedThread');
-const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
+const NewReply = require('../../../Domains/replies/entities/NewReply');
+const AddedReply = require('../../../Domains/replies/entities/AddedReply');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 const AuthenticationRepository = require('../../../Domains/authentications/AuthenticationRepository');
 const AuthenticationTokenManager = require('../../security/AuthenticationTokenManager');
-const AddThreadUseCase = require('../AddThreadUseCase');
+const AddReplyUseCase = require('../AddReplyUseCase');
 
-describe('AddThreadUseCase', () => {
-  it('should orchestrating the add thread action correctly', async () => {
+describe('AddReplyUseCase', () => {
+  it('should orchestrating the add reply action cerrectly', async () => {
     // Arrange
     const accessToken = 'accessToken';
 
@@ -17,18 +17,17 @@ describe('AddThreadUseCase', () => {
     const userIdFromAccessToken = 'user-123';
 
     const useCasePayload = {
-      title: 'sebuah thread',
-      body: 'sebuah body thread',
+      content: 'sebuah balasan',
     };
 
-    const expectedAddedThread = new AddedThread({
-      id: 'thread-123',
-      title: useCasePayload.title,
+    const expectedAddedReply = new AddedReply({
+      id: 'reply-123',
+      content: useCasePayload.content,
       owner: userIdFromAccessToken,
     });
 
-    /** creating dependency of use case */
-    const mockThreadRepository = new ThreadRepository();
+    /** mocking dependencies for use case */
+    const mockReplyRepository = new ReplyRepository();
     const mockAuthenticationRepository = new AuthenticationRepository();
     const mockAuthenticationTokenManager = new AuthenticationTokenManager();
 
@@ -42,25 +41,25 @@ describe('AddThreadUseCase', () => {
     mockAuthenticationTokenManager.decodePayload = jest
       .fn()
       .mockImplementation(() => Promise.resolve({ id: 'user-123' }));
-    mockThreadRepository.addThread = jest
+    mockReplyRepository.addReply = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(expectedAddedThread));
+      .mockImplementation(() => Promise.resolve(expectedAddedReply));
 
     /** creating use case instance */
-    const addThreadUseCase = new AddThreadUseCase({
-      threadRepository: mockThreadRepository,
+    const addReplyUseCase = new AddReplyUseCase({
+      replyRepository: mockReplyRepository,
       authenticationRepository: mockAuthenticationRepository,
       authenticationTokenManager: mockAuthenticationTokenManager,
     });
 
     // Action
-    const addedThread = await addThreadUseCase.execute(
+    const addedReply = await addReplyUseCase.execute(
       useCaseHeader,
       useCasePayload,
     );
 
     // Assert
-    expect(addedThread).toStrictEqual(expectedAddedThread);
+    expect(addedReply).toStrictEqual(expectedAddedReply);
     expect(mockAuthenticationRepository.checkAvailabilityToken).toBeCalledWith(
       useCaseHeader.authorization,
     );
@@ -70,12 +69,9 @@ describe('AddThreadUseCase', () => {
     expect(mockAuthenticationTokenManager.decodePayload).toBeCalledWith(
       accessToken,
     );
-    expect(mockThreadRepository.addThread).toBeCalledWith(
-      new NewThread({
-        title: useCasePayload.title,
-        body: useCasePayload.body,
-      }),
-      expectedAddedThread.owner,
+    expect(mockReplyRepository.addReply).toBeCalledWith(
+      new NewReply({ content: useCasePayload.content }),
+      expectedAddedReply.owner,
     );
   });
 });
