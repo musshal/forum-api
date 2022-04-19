@@ -1,11 +1,17 @@
 const mapThreadsDbToModel = ({
-  id, title, body, date, username,
+  id,
+  title,
+  body,
+  date,
+  username,
+  comments,
 }) => ({
   id,
   title,
   body,
   date,
   username,
+  comments,
 });
 
 const mapCommentsDbToModel = ({

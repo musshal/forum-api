@@ -51,8 +51,6 @@ const ThreadsTableTestHelper = {
     const commentsResult = await pool.query(query[1]);
     const repliesResult = await pool.query(query[2]);
 
-    const thread = threadResult.rows.map(mapThreadsDbToModel)[0];
-
     const replies = (commentId) => repliesResult.rows
       .filter((reply) => reply.comment_id === commentId)
       .map(mapRepliesDbToModel);
@@ -60,7 +58,9 @@ const ThreadsTableTestHelper = {
       .map((comment) => ({ ...comment, replies: replies(comment.id) }))
       .map(mapCommentsDbToModel);
 
-    thread.comments = comments;
+    const thread = threadResult.rows
+      .map(mapThreadsDbToModel)
+      .map((t) => ({ ...t, comments }));
 
     return thread;
   },
