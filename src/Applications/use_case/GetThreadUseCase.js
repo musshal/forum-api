@@ -22,8 +22,7 @@ class GetThreadUseCase {
       .filter((reply) => reply.commentId === commentId)
       .map((reply) => ({
         id: reply.id,
-        commentId: reply.commentId,
-        content: reply.content,
+        content: reply.isDelete ? '**balasan telah dihapus**' : reply.content,
         date: reply.date,
         username: reply.username,
       }));
@@ -33,12 +32,14 @@ class GetThreadUseCase {
       username: comment.username,
       date: comment.date,
       replies: replies(comment.id),
-      content: comment.content,
+      content: comment.isDelete
+        ? '**komentar telah dihapus**'
+        : comment.content,
     }));
 
     const thread = {
       ...threadResult,
-      comments: [comments],
+      comments: [...comments],
     };
 
     return new DetailThread(thread);

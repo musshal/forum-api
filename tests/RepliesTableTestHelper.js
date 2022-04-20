@@ -5,13 +5,14 @@ const pool = require('../src/Infrastructures/database/postgres/pool');
 const RepliesTableTestHelper = {
   async addReply({
     id = 'reply-123',
+    threadId = 'thread-123',
     commentId = 'comment-123',
     owner = 'user-123',
     content = 'sebuah balasan',
   }) {
     const query = {
-      text: 'INSERT INTO replies(id, comment_id, publisher, content) VALUES($1, $2, $3, $4) RETURNING content',
-      values: [id, commentId, owner, content],
+      text: 'INSERT INTO replies(id, thread_id, comment_id, publisher, content) VALUES($1, $2, $3, $4, $5) RETURNING content',
+      values: [id, threadId, commentId, owner, content],
     };
 
     await pool.query(query);
@@ -30,7 +31,7 @@ const RepliesTableTestHelper = {
     const replies = result.rows.map((reply) => ({
       id: reply.id,
       content: reply.is_delete ? '**balasan telah dihapus**' : reply.content,
-      date: reply.date,
+      date: reply.date.toISOString(),
       username: reply.username,
     }));
 

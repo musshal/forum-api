@@ -3,8 +3,12 @@ const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
+const DetailThread = require('../../../Domains/threads/entities/DetailThread');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
+const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 
 describe('ThreadRepositoryPostgres', () => {
   it('should be instance of ThreadRepository domain', () => {
@@ -56,6 +60,43 @@ describe('ThreadRepositoryPostgres', () => {
           }),
         );
         expect(thread).toBeDefined();
+      });
+    });
+
+    describe('getThreadById function', () => {
+      it('should throw NotFoundError when thread not found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+
+        const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          threadRepositoryPostgres.getThreadById('thread-xxx'),
+        ).rejects.toThrowError(NotFoundError);
+      });
+
+      it('should return detail thread when thread is found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+
+        const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+        // Action
+        const detailThread = await threadRepositoryPostgres.getThreadById(
+          'thread-123',
+        );
+
+        // Assert
+        const thread = await ThreadsTableTestHelper.findThreadById(
+          'thread-123',
+        );
+
+        expect(detailThread).toStrictEqual(new DetailThread(thread));
       });
     });
   });

@@ -45,7 +45,7 @@ const ThreadsTableTestHelper = {
       },
     ];
 
-    const threadResult = await pool.query(query[0])[0];
+    const threadResult = await pool.query(query[0]);
     const commentsResult = await pool.query(query[1]);
     const repliesResult = await pool.query(query[2]);
 
@@ -56,13 +56,14 @@ const ThreadsTableTestHelper = {
         content: reply.is_delete
           ? '**balasan telah dihapus**'
           : reply.content,
-        date: reply.date,
+        date: reply.date.toISOString(),
         username: reply.username,
       }));
+
     const comments = commentsResult.rows.map((comment) => ({
       id: comment.id,
       username: comment.username,
-      date: comment.date,
+      date: comment.date.toISOString(),
       replies: replies(comment.id),
       content: comment.is_delete
         ? '**komentar telah dihapus**'
@@ -70,9 +71,11 @@ const ThreadsTableTestHelper = {
     }));
 
     const thread = {
-      ...threadResult,
-      comments: [comments],
+      ...threadResult.rows[0],
+      date: threadResult.rows[0].date.toISOString(),
+      comments: [...comments],
     };
+
     return thread;
   },
 

@@ -41,21 +41,6 @@ describe('GetThreadUseCase', () => {
       }),
     ];
 
-    const expectedRetrieveComments = [
-      {
-        ...retrievedComments[0],
-        content: retrievedComments[0].isDelete
-          ? '**komentar telah dihapus**'
-          : retrievedComments[0].content,
-      },
-      {
-        ...retrievedComments[1],
-        content: retrievedComments[1].isDelete
-          ? '**komentar telah dihapus**'
-          : retrievedComments[1].content,
-      },
-    ];
-
     const retrievedReplies = [
       new DetailReply({
         id: 'reply-123',
@@ -75,7 +60,7 @@ describe('GetThreadUseCase', () => {
       }),
     ];
 
-    const expectedRetrieveReplies = [
+    const expectedDetailReplies = [
       {
         ...retrievedReplies[0],
         content: retrievedReplies[0].isDelete
@@ -90,25 +75,55 @@ describe('GetThreadUseCase', () => {
       },
     ];
 
-    const { isDelete: isDeleteCommentA, ...filteredDetailCommentA } = expectedRetrieveComments[0];
-    const { isDelete: isDeleteCommentB, ...filteredDetailCommentB } = expectedRetrieveComments[1];
-
-    const { isDelete: isDeleteReplyA, ...filteredDetailReplyA } = expectedRetrieveReplies[0];
-    const { isDelete: isDeleteReplyB, ...filteredDetailReplyB } = expectedRetrieveReplies[1];
-
-    const expectedDetailReplies = [
-      { ...filteredDetailReplyA },
-      { ...filteredDetailReplyB },
-    ];
-
     const expectedDetailComments = [
-      { ...filteredDetailCommentA, replies: [filteredDetailReplyA] },
-      { ...filteredDetailCommentB, replies: [filteredDetailReplyB] },
+      {
+        ...retrievedComments[0],
+        replies: [
+          {
+            id: expectedDetailReplies[0].id,
+            content: expectedDetailReplies[0].content,
+            date: expectedDetailReplies[0].date,
+            username: expectedDetailReplies[0].username,
+          },
+        ],
+        content: retrievedComments[0].isDelete
+          ? '**komentar telah dihapus**'
+          : retrievedComments[0].content,
+      },
+      {
+        ...retrievedComments[1],
+        replies: [
+          {
+            id: expectedDetailReplies[1].id,
+            content: expectedDetailReplies[1].content,
+            date: expectedDetailReplies[1].date,
+            username: expectedDetailReplies[1].username,
+          },
+        ],
+        content: retrievedComments[1].isDelete
+          ? '**komentar telah dihapus**'
+          : retrievedComments[1].content,
+      },
     ];
 
     const expectedDetailThread = {
       ...retrievedThread,
-      comments: [expectedDetailComments],
+      comments: [
+        {
+          id: expectedDetailComments[0].id,
+          username: expectedDetailComments[0].username,
+          date: expectedDetailComments[0].date,
+          replies: expectedDetailComments[0].replies,
+          content: expectedDetailComments[0].content,
+        },
+        {
+          id: expectedDetailComments[1].id,
+          username: expectedDetailComments[1].username,
+          date: expectedDetailComments[1].date,
+          replies: expectedDetailComments[1].replies,
+          content: expectedDetailComments[1].content,
+        },
+      ],
     };
 
     const mockThreadRepository = new ThreadRepository();

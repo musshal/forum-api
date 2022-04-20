@@ -7,7 +7,7 @@ const CommentsTableTestHelper = {
     id = 'comment-123',
     threadId = 'thread-123',
     owner = 'user-123',
-    content = 'sebuah comment',
+    content = 'sebuah komentar',
   }) {
     const query = {
       text: 'INSERT INTO comments(id, thread_id, publisher, content) VALUES($1, $2, $3, $4) RETURNING content',
@@ -29,7 +29,7 @@ const CommentsTableTestHelper = {
     const result = await pool.query(query);
     const comments = result.rows.map((comment) => ({
       id: comment.id,
-      date: comment.date,
+      date: comment.date.toISOString(),
       content: comment.id_delete
         ? '**komentar telah diahpus**'
         : comment.content,
