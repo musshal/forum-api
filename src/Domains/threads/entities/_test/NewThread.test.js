@@ -18,6 +18,7 @@ describe('NewThread entities', () => {
     const payload = {
       title: 123,
       body: true,
+      owner: {},
     };
 
     // Action and Assert
@@ -31,6 +32,7 @@ describe('NewThread entities', () => {
     const payload = {
       title: 'sebuah thread',
       body: 'sebuah body thread',
+      owner: 'user-123',
     };
 
     // Action
@@ -39,5 +41,6 @@ describe('NewThread entities', () => {
     // Assert
     expect(newThread.title).toEqual(payload.title);
     expect(newThread.body).toEqual(payload.body);
+    expect(newThread.owner).toEqual(payload.owner);
   });
 });

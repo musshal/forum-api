@@ -1,8 +1,6 @@
 /* istanbul ignore file */
 
-const {
-  mapRepliesDbToModel,
-} = require('../src/Commons/utils');
+const mapThreadDbToModel = require('../src/Commons/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const ThreadsTableTestHelper = {
@@ -13,14 +11,16 @@ const ThreadsTableTestHelper = {
     owner = 'user-123',
   }) {
     const query = {
-      text: 'INSERT INTO threads(id, title, body, publisher) VALUES($1, $2, $3, $4)',
+      text: 'INSERT INTO threads(id, title, body, publisher) VALUES($1, $2, $3, $4) RETURNING id, title, publisher',
       values: [id, title, body, owner],
     };
 
-    await pool.query(query);
+    const result = await pool.query(query);
+
+    return result.rows.map(mapThreadDbToModel);
   },
 
-  async getThreadById(id) {
+  async findThreadById(id) {
     const query = [
       {
         text: `SELECT threads.id, threads.title, threads.body, threads.date, users.username
@@ -30,14 +30,14 @@ const ThreadsTableTestHelper = {
         values: [id],
       },
       {
-        text: `SELECT comments.id, comments.date, comments.content, users.username
+        text: `SELECT comments.id, comments.date, comments.content, comments.is_delete, users.username
         FROM comments
         INNER JOIN users ON comments.publisher = users.id
         WHERE thread_id = $1`,
         values: [id],
       },
       {
-        text: `SELECT replies.id, replies.comment_id, replies.content, replies.date, users.username
+        text: `SELECT replies.id, replies.comment_id, replies.content, replies.date, replies.is_delete, users.username
         FROM replies
         INNER JOIN users ON replies.publisher = users.id
         WHERE thread_id = $1`,
@@ -51,10 +51,22 @@ const ThreadsTableTestHelper = {
 
     const replies = (commentId) => repliesResult.rows
       .filter((reply) => reply.comment_id === commentId)
-      .map(mapRepliesDbToModel);
+      .map((reply) => ({
+        id: reply.id,
+        content: reply.is_delete
+          ? '**balasan telah dihapus**'
+          : reply.content,
+        date: reply.date,
+        username: reply.username,
+      }));
     const comments = commentsResult.rows.map((comment) => ({
-      ...comment,
+      id: comment.id,
+      username: comment.username,
+      date: comment.date,
       replies: replies(comment.id),
+      content: comment.is_delete
+        ? '**komentar telah dihapus**'
+        : comment.content,
     }));
 
     const thread = {

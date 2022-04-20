@@ -10,16 +10,16 @@ const CommentsTableTestHelper = {
     content = 'sebuah comment',
   }) {
     const query = {
-      text: 'INSERT INTO comments(id, thread_id, publisher, content) VALUES($1, $2, $3, $4)',
+      text: 'INSERT INTO comments(id, thread_id, publisher, content) VALUES($1, $2, $3, $4) RETURNING content',
       values: [id, threadId, owner, content],
     };
 
     await pool.query(query);
   },
 
-  async getCommentsByThreadId(threadId) {
+  async findCommentsByThreadId(threadId) {
     const query = {
-      text: `SELECT comments.id, comments.date, comments.content, users.username
+      text: `SELECT comments.id, comments.date, comments.content, comments.is_delete, users.username
       FROM comments
       INNER JOIN users ON comments.publisher = users.id
       WHERE thread_id = $1`,
@@ -27,8 +27,16 @@ const CommentsTableTestHelper = {
     };
 
     const result = await pool.query(query);
+    const comments = result.rows.map((comment) => ({
+      id: comment.id,
+      date: comment.date,
+      content: comment.id_delete
+        ? '**komentar telah diahpus**'
+        : comment.content,
+      username: comment.username,
+    }));
 
-    return result.rows;
+    return comments;
   },
 
   async deleteCommentById(id) {

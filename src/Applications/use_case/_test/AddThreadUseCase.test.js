@@ -74,8 +74,8 @@ describe('AddThreadUseCase', () => {
       new NewThread({
         title: useCasePayload.title,
         body: useCasePayload.body,
+        owner: userIdFromAccessToken,
       }),
-      expectedAddedThread.owner,
     );
   });
 });

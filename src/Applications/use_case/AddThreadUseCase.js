@@ -15,7 +15,9 @@ class AddThreadUseCase {
     const { authorization } = useCaseHeader;
     const { title, body } = useCasePayload;
 
-    const accessToken = await this._authenticationRepository.checkAvailabilityToken(authorization);
+    const accessToken = await this._authenticationRepository.checkAvailabilityToken(
+      authorization,
+    );
 
     await this._authenticationTokenManager.verifyRefreshToken(accessToken);
 
@@ -23,9 +25,9 @@ class AddThreadUseCase {
       accessToken,
     );
 
-    const newThread = new NewThread({ title, body });
+    const newThread = new NewThread({ title, body, owner });
 
-    return this._threadRepository.addThread(newThread, owner);
+    return this._threadRepository.addThread(newThread);
   }
 }
 

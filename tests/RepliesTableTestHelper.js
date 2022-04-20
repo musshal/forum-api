@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 
-const { mapRepliesDbToModel } = require('../src/Commons/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const RepliesTableTestHelper = {
@@ -11,16 +10,16 @@ const RepliesTableTestHelper = {
     content = 'sebuah balasan',
   }) {
     const query = {
-      text: 'INSERT INTO replies(id, comment_id, publisher, content) VALUES($1, $2, $3, $4)',
+      text: 'INSERT INTO replies(id, comment_id, publisher, content) VALUES($1, $2, $3, $4) RETURNING content',
       values: [id, commentId, owner, content],
     };
 
     await pool.query(query);
   },
 
-  async getRepliesByThreadId(threadId) {
+  async findRepliesByThreadId(threadId) {
     const query = {
-      text: `SELECT replies.id, replies.comment_id, replies.content, replies.date, users.username
+      text: `SELECT replies.id, replies.comment_id, replies.content, replies.date, replies.is_delete, users.username
       FROM replies
       INNER JOIN users ON replies.publisher = users.id
       WHERE thread_id = $1`,
@@ -28,8 +27,14 @@ const RepliesTableTestHelper = {
     };
 
     const result = await pool.query(query);
+    const replies = result.rows.map((reply) => ({
+      id: reply.id,
+      content: reply.is_delete ? '**balasan telah dihapus**' : reply.content,
+      date: reply.date,
+      username: reply.username,
+    }));
 
-    return result.rows.map(mapRepliesDbToModel);
+    return replies;
   },
 
   async deleteReplyById(id) {

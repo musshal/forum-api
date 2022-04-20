@@ -1,13 +1,7 @@
-const mapRepliesDbToModel = ({
-  id, comment_id, username, date, content,
-}) => ({
+const mapThreadDbToModel = ({ id, title, publisher }) => ({
   id,
-  commentId: comment_id,
-  username,
-  date,
-  content,
+  title,
+  owner: publisher,
 });
 
-module.exports = {
-  mapRepliesDbToModel,
-};
+module.exports = mapThreadDbToModel;
