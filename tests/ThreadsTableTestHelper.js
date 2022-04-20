@@ -26,7 +26,7 @@ const ThreadsTableTestHelper = {
         text: `SELECT threads.id, threads.title, threads.body, threads.date, users.username
         FROM threads
         INNER JOIN users ON threads.publisher = users.id
-        WHERE id = $1`,
+        WHERE threads.id = $1`,
         values: [id],
       },
       {
