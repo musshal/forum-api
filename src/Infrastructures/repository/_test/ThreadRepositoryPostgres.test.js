@@ -99,5 +99,31 @@ describe('ThreadRepositoryPostgres', () => {
         expect(detailThread).toStrictEqual(new DetailThread(thread));
       });
     });
+
+    describe('verifyExistingThread function', () => {
+      it('should throw NotFoundError when thread not found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+
+        const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          threadRepositoryPostgres.verifyExistingThread('thread-xxx'),
+        ).rejects.toThrowError(NotFoundError);
+      });
+
+      it('should resolve when thread is found', async () => {
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+
+        const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+        await expect(
+          threadRepositoryPostgres.verifyExistingThread('thread-123'),
+        ).resolves.not.toThrowError();
+      });
+    });
   });
 });

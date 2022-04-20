@@ -72,7 +72,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     }));
 
     if (!threadResult.rowCount) {
-      throw new NotFoundError('thread tidak ditemukan');
+      throw new NotFoundError('Thread tidak ditemukan');
     }
 
     const thread = {
@@ -82,6 +82,19 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     };
 
     return new DetailThread(thread);
+  }
+
+  async verifyExistingThread(id) {
+    const query = {
+      text: 'SELECT id FROM threads WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Thread tidak ditemukan');
+    }
   }
 }
 
