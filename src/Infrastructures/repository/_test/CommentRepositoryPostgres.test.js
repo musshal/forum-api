@@ -207,5 +207,41 @@ describe('CommentRepositoryPostgres', () => {
         ).resolves.not.toThrowError();
       });
     });
+
+    describe('verifyExistingComment method', () => {
+      it('should throw NotFoundError if the comment is not found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(
+          pool,
+          {},
+        );
+
+        // Action and Assert
+        await expect(
+          commentRepositoryPostgres.verifyExistingComment('comment-xxx'),
+        ).rejects.toThrowError(NotFoundError);
+      });
+
+      it('should resolve if the comment is found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(
+          pool,
+          {},
+        );
+
+        // Action and Assert
+        await expect(
+          commentRepositoryPostgres.verifyExistingComment('comment-123'),
+        ).resolves.not.toThrowError();
+      });
+    });
   });
 });
