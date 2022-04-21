@@ -68,6 +68,19 @@ class CommentRepositoryPostgres extends CommentRepository {
       throw new AuthorizationError('Anda bukan publisher');
     }
   }
+
+  async deleteCommentById(id) {
+    const query = {
+      text: 'UPDATE comments SET is_delete = true WHERE id = $1 RETURNING id',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Komentar gagal dihapus. Id tidak ditemukan');
+    }
+  }
 }
 
 module.exports = CommentRepositoryPostgres;

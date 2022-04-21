@@ -171,5 +171,41 @@ describe('CommentRepositoryPostgres', () => {
         ).resolves.not.toThrowError();
       });
     });
+
+    describe('deleteCommentById function', () => {
+      it('should throw NotFoundError if the comment is not found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(
+          pool,
+          {},
+        );
+
+        // Action and Assert
+        await expect(
+          commentRepositoryPostgres.deleteCommentById('comment-xxx'),
+        ).rejects.toThrowError(NotFoundError);
+      });
+
+      it('should delete comment correctly', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(
+          pool,
+          {},
+        );
+
+        // Action and Assert
+        await expect(
+          commentRepositoryPostgres.deleteCommentById('comment-123'),
+        ).resolves.not.toThrowError();
+      });
+    });
   });
 });
