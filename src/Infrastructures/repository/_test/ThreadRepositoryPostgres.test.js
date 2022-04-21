@@ -96,7 +96,7 @@ describe('ThreadRepositoryPostgres', () => {
           'thread-123',
         );
 
-        expect(detailThread).toStrictEqual(new DetailThread(thread));
+        expect(detailThread).toStrictEqual(thread);
       });
     });
 
