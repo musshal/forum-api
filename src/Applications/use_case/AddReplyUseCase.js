@@ -33,9 +33,9 @@ class AddReplyUseCase {
     await this._threadRepository.verifyExistingThread(threadId);
     await this._commentRepository.verifyExistingComment(commentId);
 
-    const newReply = new NewReply({ content });
+    const newReply = new NewReply({ content, owner });
 
-    return this._replyRepository.addReply(newReply, owner);
+    return this._replyRepository.addReply(newReply);
   }
 }
 

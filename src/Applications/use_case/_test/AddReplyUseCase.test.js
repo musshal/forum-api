@@ -25,6 +25,7 @@ describe('AddReplyUseCase', () => {
 
     const useCasePayload = {
       content: 'sebuah balasan',
+      owner: userIdFromAccessToken,
     };
 
     const expectedAddedReply = new AddedReply({
@@ -94,8 +95,7 @@ describe('AddReplyUseCase', () => {
       useCaseParam.commentId,
     );
     expect(mockReplyRepository.addReply).toBeCalledWith(
-      new NewReply({ content: useCasePayload.content }),
-      expectedAddedReply.owner,
+      new NewReply({ content: useCasePayload.content, owner: useCasePayload.owner }),
     );
   });
 });

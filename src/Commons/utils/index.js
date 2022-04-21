@@ -10,4 +10,10 @@ const mapCommentDbToModel = ({ id, content, publisher }) => ({
   owner: publisher,
 });
 
-module.exports = { mapThreadDbToModel, mapCommentDbToModel };
+const mapReplyDbToModel = ({ id, content, publisher }) => ({
+  id,
+  content,
+  owner: publisher,
+});
+
+module.exports = { mapThreadDbToModel, mapCommentDbToModel, mapReplyDbToModel };

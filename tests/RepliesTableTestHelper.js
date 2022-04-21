@@ -11,31 +11,25 @@ const RepliesTableTestHelper = {
     content = 'sebuah balasan',
   }) {
     const query = {
-      text: 'INSERT INTO replies(id, thread_id, comment_id, publisher, content) VALUES($1, $2, $3, $4, $5) RETURNING content',
+      text: 'INSERT INTO replies(id, thread_id, comment_id, publisher, content) VALUES($1, $2, $3, $4, $5) RETURNING id, content, publisher',
       values: [id, threadId, commentId, owner, content],
     };
 
     await pool.query(query);
   },
 
-  async findRepliesByThreadId(threadId) {
+  async findReplyById(id) {
     const query = {
       text: `SELECT replies.id, replies.comment_id, replies.content, replies.date, replies.is_delete, users.username
       FROM replies
       INNER JOIN users ON replies.publisher = users.id
-      WHERE thread_id = $1`,
-      values: [threadId],
+      WHERE replies.id = $1`,
+      values: [id],
     };
 
     const result = await pool.query(query);
-    const replies = result.rows.map((reply) => ({
-      id: reply.id,
-      content: reply.is_delete ? '**balasan telah dihapus**' : reply.content,
-      date: reply.date.toISOString(),
-      username: reply.username,
-    }));
 
-    return replies;
+    return result.rows[0];
   },
 
   async deleteReplyById(id) {
