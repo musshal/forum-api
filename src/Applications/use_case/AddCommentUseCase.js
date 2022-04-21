@@ -30,9 +30,9 @@ class AddCommentUseCase {
 
     await this._threadRepository.verifyExistingThread(threadId);
 
-    const newComment = new NewComment({ content });
+    const newComment = new NewComment({ content, owner });
 
-    return this._commentRepository.addComment(newComment, owner);
+    return this._commentRepository.addComment(newComment);
   }
 }
 

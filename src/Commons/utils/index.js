@@ -4,4 +4,10 @@ const mapThreadDbToModel = ({ id, title, publisher }) => ({
   owner: publisher,
 });
 
-module.exports = mapThreadDbToModel;
+const mapCommentDbToModel = ({ id, content, publisher }) => ({
+  id,
+  content,
+  owner: publisher,
+});
+
+module.exports = { mapThreadDbToModel, mapCommentDbToModel };

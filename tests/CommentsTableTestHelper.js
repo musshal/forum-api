@@ -17,26 +17,18 @@ const CommentsTableTestHelper = {
     await pool.query(query);
   },
 
-  async findCommentsByThreadId(threadId) {
+  async findCommentById(id) {
     const query = {
       text: `SELECT comments.id, comments.date, comments.content, comments.is_delete, users.username
       FROM comments
       INNER JOIN users ON comments.publisher = users.id
-      WHERE thread_id = $1`,
-      values: [threadId],
+      WHERE comments.id = $1`,
+      values: [id],
     };
 
     const result = await pool.query(query);
-    const comments = result.rows.map((comment) => ({
-      id: comment.id,
-      date: comment.date.toISOString(),
-      content: comment.id_delete
-        ? '**komentar telah diahpus**'
-        : comment.content,
-      username: comment.username,
-    }));
 
-    return comments;
+    return result.rows[0];
   },
 
   async deleteCommentById(id) {

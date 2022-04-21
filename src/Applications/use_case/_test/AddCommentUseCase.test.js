@@ -23,6 +23,7 @@ describe('AddCommentUseCase', () => {
 
     const useCasePayload = {
       content: 'sebuah comment',
+      owner: userIdFromAccessToken,
     };
 
     const expectedAddedComment = new AddedComment({
@@ -84,8 +85,10 @@ describe('AddCommentUseCase', () => {
       useCaseParam.threadId,
     );
     expect(mockCommentRepository.addComment).toBeCalledWith(
-      new NewComment({ content: useCasePayload.content }),
-      expectedAddedComment.owner,
+      new NewComment({
+        content: useCasePayload.content,
+        owner: userIdFromAccessToken,
+      }),
     );
   });
 });
