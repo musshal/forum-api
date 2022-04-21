@@ -1,3 +1,4 @@
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const { mapCommentDbToModel } = require('../../Commons/utils');
 const CommentRepository = require('../../Domains/comments/CommentRepository');
@@ -35,6 +36,37 @@ class CommentRepositoryPostgres extends CommentRepository {
     const commentResult = await this._pool.query(commentQuery);
 
     return new AddedComment(commentResult.rows.map(mapCommentDbToModel)[0]);
+  }
+
+  async getCommentsByThreadId(threadId) {
+    const query = {
+      text: `SELECT comments.id, comments.date, comments.content, users.username
+      FROM comments
+      INNER JOIN users ON comments.publisher = users.id
+      WHERE thread_id = $1`,
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Komentar tidak ditemukan');
+    }
+
+    return result.rows;
+  }
+
+  async verifyCommentPublisher(id, owner) {
+    const query = {
+      text: 'SELECT id, publisher FROM comments WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (result.rows[0].publisher !== owner) {
+      throw new AuthorizationError('Anda bukan publisher');
+    }
   }
 }
 

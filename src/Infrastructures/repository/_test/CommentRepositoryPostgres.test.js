@@ -7,6 +7,7 @@ const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
+const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 
 describe('CommentRepositoryPostgres', () => {
   it('should be instance of CommentRepository domain', () => {
@@ -84,6 +85,90 @@ describe('CommentRepositoryPostgres', () => {
         await expect(
           commentRepositoryPostgres.addComment(newComment, 'thread-xxx'),
         ).rejects.toThrowError(NotFoundError);
+      });
+    });
+
+    describe('getCommentByThreadId function', () => {
+      it('should throw NotFoundError when comments not found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({ id: 'comment-123' });
+        await CommentsTableTestHelper.addComment({ id: 'comment-234' });
+        await CommentsTableTestHelper.addComment({ id: 'comment-345' });
+
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(
+          pool,
+          {},
+        );
+
+        // Action and Assert
+        await expect(
+          commentRepositoryPostgres.getCommentsByThreadId('thread-xxx'),
+        ).rejects.toThrowError(NotFoundError);
+      });
+
+      it('should return comments correctly', async () => {
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({ id: 'comment-123' });
+        await CommentsTableTestHelper.addComment({ id: 'comment-234' });
+        await CommentsTableTestHelper.addComment({ id: 'comment-345' });
+
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(
+          pool,
+          {},
+        );
+
+        // Action
+        const comments = await commentRepositoryPostgres.getCommentsByThreadId(
+          'thread-123',
+        );
+
+        // Assert
+        expect(comments).toHaveLength(3);
+      });
+    });
+
+    describe('verifyCommentPublisher', () => {
+      it('should throw AuthorizationError when user is not the publisher of the comment', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(
+          pool,
+          {},
+        );
+
+        // Action and Assert
+        await expect(
+          commentRepositoryPostgres.verifyCommentPublisher(
+            'comment-123',
+            'user-xxx',
+          ),
+        ).rejects.toThrowError(AuthorizationError);
+      });
+
+      it('should resolve when user is the publisher of the comment', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(
+          pool,
+          {},
+        );
+
+        // Action and Assert
+        await expect(
+          commentRepositoryPostgres.verifyCommentPublisher(
+            'comment-123',
+            'user-123',
+          ),
+        ).resolves.not.toThrowError();
       });
     });
   });
