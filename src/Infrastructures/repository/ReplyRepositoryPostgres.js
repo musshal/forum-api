@@ -1,3 +1,4 @@
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const { mapReplyDbToModel } = require('../../Commons/utils');
 const AddedReply = require('../../Domains/replies/entities/AddedReply');
@@ -48,6 +49,67 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     const replyResult = await this._pool.query(replyQuery);
 
     return new AddedReply(replyResult.rows.map(mapReplyDbToModel)[0]);
+  }
+
+  async getRepliesByThreadIdAndCommentId(threadId, commentId) {
+    const query = {
+      text: `SELECT replies.id, replies.content, replies.date, users.username
+      FROM replies
+      INNER JOIN users ON replies.publisher = users.id
+      WHERE replies.thread_id = $1 AND replies.comment_id = $2`,
+      values: [threadId, commentId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Balasan tidak ditemukan');
+    }
+
+    return result.rows;
+  }
+
+  async verifyReplyPublisher(id, owner) {
+    const query = {
+      text: 'SELECT id, publisher FROM replies WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Balasan tidak ditemukan');
+    }
+
+    if (result.rows[0].publisher !== owner) {
+      throw new AuthorizationError('Anda bukan publisher');
+    }
+  }
+
+  async deleteReplyById(id) {
+    const query = {
+      text: 'UPDATE replies SET is_delete = true WHERE id = $1 RETURNING id',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Balasan gagal dihapus. Id tidak ditemukan');
+    }
+  }
+
+  async verifyExistingReply(id) {
+    const query = {
+      text: 'SELECT id FROM replies WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Balasan tidak ditemukan');
+    }
   }
 }
 

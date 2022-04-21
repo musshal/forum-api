@@ -119,5 +119,179 @@ describe('ReplyRepositoryPostgres', () => {
         ).rejects.toThrowError(NotFoundError);
       });
     });
+
+    describe('getRepliesByThreadIdAndCommentId method', () => {
+      it('should return replies correctly', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+        await RepliesTableTestHelper.addReply({ id: 'reply-234' });
+        await RepliesTableTestHelper.addReply({ id: 'reply-345' });
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action
+        const replies = await replyRepositoryPostgres.getRepliesByThreadIdAndCommentId(
+          'thread-123',
+          'comment-123',
+        );
+
+        // Assert
+        expect(replies).toHaveLength(3);
+      });
+
+      it('should throw NotFoundError if the replies is not found due to the thread does not exist', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+        await RepliesTableTestHelper.addReply({ id: 'reply-234' });
+        await RepliesTableTestHelper.addReply({ id: 'reply-345' });
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          replyRepositoryPostgres.getRepliesByThreadIdAndCommentId(
+            'thread-xxx',
+            'comment-123',
+          ),
+        ).rejects.toThrowError(NotFoundError);
+      });
+
+      it('should throw NotFoundError if the replies is not found due to the comment does not exist', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+        await RepliesTableTestHelper.addReply({ id: 'reply-234' });
+        await RepliesTableTestHelper.addReply({ id: 'reply-345' });
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          replyRepositoryPostgres.getRepliesByThreadIdAndCommentId(
+            'thread-123',
+            'comment-xxx',
+          ),
+        ).rejects.toThrowError(NotFoundError);
+      });
+    });
+
+    describe('verifyReplyPublisher method', () => {
+      it('should throw NotFoundError if the reply is not found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          replyRepositoryPostgres.verifyReplyPublisher('reply-xxx', 'user-123'),
+        ).rejects.toThrowError(NotFoundError);
+      });
+
+      it('should throw AuthorizationError if the user is not publisher of the comment', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          replyRepositoryPostgres.verifyReplyPublisher('reply-123', 'user-xxx'),
+        ).rejects.toThrowError(AuthorizationError);
+      });
+
+      it('should resolve if the user is publisher of the reply', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          replyRepositoryPostgres.verifyReplyPublisher('reply-123', 'user-123'),
+        ).resolves.not.toThrowError();
+      });
+    });
+
+    describe('deleteReplyById method', () => {
+      it('should throw NotFoundError if the reply is not found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          replyRepositoryPostgres.deleteReplyById('reply-xxx'),
+        ).rejects.toThrowError(NotFoundError);
+      });
+
+      it('should delete reply correctly', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          replyRepositoryPostgres.deleteReplyById('reply-123'),
+        ).resolves.not.toThrowError();
+      });
+    });
+
+    describe('verifyExistingReply method', () => {
+      it('should throw NotFoundError if the reply is not found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          replyRepositoryPostgres.verifyExistingReply('reply-xxx'),
+        ).rejects.toThrowError(NotFoundError);
+      });
+
+      it('should resolve if the reply is found', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await RepliesTableTestHelper.addReply({});
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        // Action and Assert
+        await expect(
+          replyRepositoryPostgres.verifyExistingReply('reply-123'),
+        ).resolves.not.toThrowError();
+      });
+    });
   });
 });

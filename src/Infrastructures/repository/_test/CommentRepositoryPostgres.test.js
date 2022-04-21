@@ -93,7 +93,7 @@ describe('CommentRepositoryPostgres', () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
-        await CommentsTableTestHelper.addComment({ id: 'comment-123' });
+        await CommentsTableTestHelper.addComment({});
         await CommentsTableTestHelper.addComment({ id: 'comment-234' });
         await CommentsTableTestHelper.addComment({ id: 'comment-345' });
 
@@ -111,7 +111,7 @@ describe('CommentRepositoryPostgres', () => {
       it('should return comments correctly', async () => {
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
-        await CommentsTableTestHelper.addComment({ id: 'comment-123' });
+        await CommentsTableTestHelper.addComment({});
         await CommentsTableTestHelper.addComment({ id: 'comment-234' });
         await CommentsTableTestHelper.addComment({ id: 'comment-345' });
 
