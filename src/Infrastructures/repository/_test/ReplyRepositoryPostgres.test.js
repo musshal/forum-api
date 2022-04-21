@@ -29,7 +29,7 @@ describe('ReplyRepositoryPostgres', () => {
       await pool.end();
     });
 
-    describe('addReply method', () => {
+    describe('addReply function', () => {
       it('should create new reply and return added reply correctly', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
@@ -67,7 +67,7 @@ describe('ReplyRepositoryPostgres', () => {
         expect(reply).toBeDefined();
       });
 
-      it('should throw NotFoundError if the thread is not found', async () => {
+      it('should throw NotFoundError when the thread not found', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
@@ -94,7 +94,8 @@ describe('ReplyRepositoryPostgres', () => {
         ).rejects.toThrowError(NotFoundError);
       });
 
-      it('should throw NotFoundError if the comment is not found', async () => {
+      it('should throw NotFoundError when the comment not found', async () => {
+        // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
         await CommentsTableTestHelper.addComment({});
@@ -110,6 +111,7 @@ describe('ReplyRepositoryPostgres', () => {
           owner: 'user-123',
         });
 
+        // Action and Assert
         await expect(
           replyRepositoryPostgres.addReply(
             newReply,
@@ -120,7 +122,7 @@ describe('ReplyRepositoryPostgres', () => {
       });
     });
 
-    describe('getRepliesByThreadIdAndCommentId method', () => {
+    describe('getRepliesByThreadIdAndCommentId function', () => {
       it('should return replies correctly', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
@@ -142,7 +144,7 @@ describe('ReplyRepositoryPostgres', () => {
         expect(replies).toHaveLength(3);
       });
 
-      it('should throw NotFoundError if the replies is not found due to the thread does not exist', async () => {
+      it('should throw NotFoundError when the replies not found due to the thread does not exist', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
@@ -162,7 +164,7 @@ describe('ReplyRepositoryPostgres', () => {
         ).rejects.toThrowError(NotFoundError);
       });
 
-      it('should throw NotFoundError if the replies is not found due to the comment does not exist', async () => {
+      it('should throw NotFoundError when the replies not found due to the comment does not exist', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
@@ -183,8 +185,8 @@ describe('ReplyRepositoryPostgres', () => {
       });
     });
 
-    describe('verifyReplyPublisher method', () => {
-      it('should throw NotFoundError if the reply is not found', async () => {
+    describe('verifyReplyPublisher function', () => {
+      it('should throw NotFoundError whn the reply not found', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
@@ -199,7 +201,7 @@ describe('ReplyRepositoryPostgres', () => {
         ).rejects.toThrowError(NotFoundError);
       });
 
-      it('should throw AuthorizationError if the user is not publisher of the comment', async () => {
+      it('should throw AuthorizationError when the user is not publisher of the reply', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
@@ -214,7 +216,7 @@ describe('ReplyRepositoryPostgres', () => {
         ).rejects.toThrowError(AuthorizationError);
       });
 
-      it('should resolve if the user is publisher of the reply', async () => {
+      it('should resolve when the user is publisher of the reply', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
@@ -230,8 +232,8 @@ describe('ReplyRepositoryPostgres', () => {
       });
     });
 
-    describe('deleteReplyById method', () => {
-      it('should throw NotFoundError if the reply is not found', async () => {
+    describe('deleteReplyById function', () => {
+      it('should throw NotFoundError when the reply not found', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
@@ -262,8 +264,8 @@ describe('ReplyRepositoryPostgres', () => {
       });
     });
 
-    describe('verifyExistingReply method', () => {
-      it('should throw NotFoundError if the reply is not found', async () => {
+    describe('verifyExistingReply function', () => {
+      it('should throw NotFoundError when the reply not found', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
@@ -278,7 +280,7 @@ describe('ReplyRepositoryPostgres', () => {
         ).rejects.toThrowError(NotFoundError);
       });
 
-      it('should resolve if the reply is found', async () => {
+      it('should resolve when the reply is found', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});

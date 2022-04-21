@@ -24,7 +24,7 @@ class CommentRepositoryPostgres extends CommentRepository {
 
     if (!threadResult.rowCount) {
       throw new NotFoundError(
-        'Gagal menambahkan komentar. Thread tidak ditemukan',
+        'Gagal mengirimkan komentar. Thread tidak ditemukan',
       );
     }
 

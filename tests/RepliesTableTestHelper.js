@@ -11,7 +11,7 @@ const RepliesTableTestHelper = {
     content = 'sebuah balasan',
   }) {
     const query = {
-      text: 'INSERT INTO replies(id, thread_id, comment_id, publisher, content) VALUES($1, $2, $3, $4, $5) RETURNING id, content, publisher',
+      text: 'INSERT INTO replies(id, thread_id, comment_id, publisher, content) VALUES($1, $2, $3, $4, $5)',
       values: [id, threadId, commentId, owner, content],
     };
 
@@ -29,7 +29,7 @@ const RepliesTableTestHelper = {
 
     const result = await pool.query(query);
 
-    return result.rows[0];
+    return result.rows;
   },
 
   async deleteReplyById(id) {

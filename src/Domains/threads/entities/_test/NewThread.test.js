@@ -7,7 +7,7 @@ describe('NewThread entities', () => {
       title: 'sebuah thread',
     };
 
-    // Action & Assert
+    // Action and Assert
     expect(() => new NewThread(payload)).toThrowError(
       'NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );

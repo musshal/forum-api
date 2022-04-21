@@ -70,7 +70,7 @@ describe('CommentRepositoryPostgres', () => {
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
 
-        const fakeIdGenerator = () => '123'; // stub!
+        const fakeIdGenerator = () => '123';
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
           pool,
           fakeIdGenerator,
@@ -88,7 +88,7 @@ describe('CommentRepositoryPostgres', () => {
       });
     });
 
-    describe('getCommentByThreadId function', () => {
+    describe('getCommentsByThreadId function', () => {
       it('should throw NotFoundError when comments not found', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
@@ -173,7 +173,7 @@ describe('CommentRepositoryPostgres', () => {
     });
 
     describe('deleteCommentById function', () => {
-      it('should throw NotFoundError if the comment is not found', async () => {
+      it('should throw NotFoundError when the comment not found', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
@@ -209,7 +209,7 @@ describe('CommentRepositoryPostgres', () => {
     });
 
     describe('verifyExistingComment method', () => {
-      it('should throw NotFoundError if the comment is not found', async () => {
+      it('should throw NotFoundError when the comment not found', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});

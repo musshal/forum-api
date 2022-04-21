@@ -10,7 +10,7 @@ const CommentsTableTestHelper = {
     content = 'sebuah komentar',
   }) {
     const query = {
-      text: 'INSERT INTO comments(id, thread_id, publisher, content) VALUES($1, $2, $3, $4) RETURNING id, content, publisher',
+      text: 'INSERT INTO comments(id, thread_id, publisher, content) VALUES($1, $2, $3, $4)',
       values: [id, threadId, owner, content],
     };
 
@@ -28,12 +28,12 @@ const CommentsTableTestHelper = {
 
     const result = await pool.query(query);
 
-    return result.rows[0];
+    return result.rows;
   },
 
   async deleteCommentById(id) {
     const query = {
-      text: 'UPDATE comments SET is_delete = true WHERE id = $1 RETURNING id',
+      text: 'UPDATE comments SET is_delete = true WHERE id = $1',
       values: [id],
     };
 
