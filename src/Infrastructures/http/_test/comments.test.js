@@ -18,7 +18,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
     await ServerTesthelper.cleanTable();
   });
 
-  describe('when POST /threads/{threadsId}/comments', () => {
+  describe('when POST /threads/{threadId}/comments', () => {
     it('should response 201 and persisted addedComment', async () => {
       // Arrange
       const requestPayload = {
