@@ -35,7 +35,7 @@ describe('ThreadRepositoryPostgres', () => {
           owner: 'user-123',
         });
 
-        const fakeIdGenerator = () => '123'; // stub!
+        const fakeIdGenerator = () => '123';
         const threadRepositoryPostgres = new ThreadRepositoryPostgres(
           pool,
           fakeIdGenerator,
