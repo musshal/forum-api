@@ -1,5 +1,5 @@
 class ReplyRepository {
-  async addReply(newReply) {
+  async addReply(newReply, threadId, owner) {
     throw new Error('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 

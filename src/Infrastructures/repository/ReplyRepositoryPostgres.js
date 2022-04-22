@@ -11,44 +11,18 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     this._idGenerator = idGenerator;
   }
 
-  async addReply(newReply, threadId, commentId) {
-    const { content, owner } = newReply;
+  async addReply(newReply, threadId, commentId, owner) {
+    const { content } = newReply;
     const id = `reply-${this._idGenerator()}`;
 
-    const threadQuery = {
-      text: 'SELECT id FROM threads WHERE id = $1',
-      values: [threadId],
-    };
-
-    const threadResult = await this._pool.query(threadQuery);
-
-    if (!threadResult.rowCount) {
-      throw new NotFoundError(
-        'Gagal mengirimkan balasan. Thread tidak ditemukan',
-      );
-    }
-
-    const commentQuery = {
-      text: 'SELECT id FROM comments WHERE id = $1',
-      values: [commentId],
-    };
-
-    const commentResult = await this._pool.query(commentQuery);
-
-    if (!commentResult.rowCount) {
-      throw new NotFoundError(
-        'Gagal mengirimkan balasan. Komentar tidak ditemukan',
-      );
-    }
-
-    const replyQuery = {
+    const query = {
       text: 'INSERT INTO replies(id, thread_id, comment_id, publisher, content) VALUES($1, $2, $3, $4, $5) RETURNING id, content, publisher',
       values: [id, threadId, commentId, owner, content],
     };
 
-    const replyResult = await this._pool.query(replyQuery);
+    const result = await this._pool.query(query);
 
-    return new AddedReply(replyResult.rows.map(mapReplyDbToModel)[0]);
+    return new AddedReply(result.rows.map(mapReplyDbToModel)[0]);
   }
 
   async getRepliesByThreadId(threadId) {

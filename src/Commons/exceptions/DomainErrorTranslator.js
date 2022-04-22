@@ -43,7 +43,13 @@ DomainErrorTranslator._directories = {
     'tidak dapat mengirimkan komentar karena properti yang dibutuhkan tidak ada',
   ),
   'NEW_COMMENT.NOT_MEET_DATA_TYPE_SPESIFICATION': new InvariantError(
-    'tidak dapat mengirimkan komentar karena properti yang dibutuhkan tidak ada',
+    'tidak dapat mengirimkan komentar karena tipe data tidak sesuai',
+  ),
+  'NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError(
+    'tidak dapat mengirimkan balasan karena properti yang dibutuhkan tidak ada',
+  ),
+  NEW_REPLY_NOT_MEET_DATA_TYPE_SPESIFICATION: new InvariantError(
+    'tidak dapat mengirimkan balasan karena tipe data tidak sesuai',
   ),
 };
 

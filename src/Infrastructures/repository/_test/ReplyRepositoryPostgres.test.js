@@ -38,7 +38,6 @@ describe('ReplyRepositoryPostgres', () => {
 
         const newReply = new NewReply({
           content: 'sebuah balasan',
-          owner: 'user-123',
         });
 
         const fakeIdGenerator = () => '123';
@@ -52,6 +51,7 @@ describe('ReplyRepositoryPostgres', () => {
           newReply,
           'thread-123',
           'comment-123',
+          'user-123',
         );
 
         // Assert
@@ -65,60 +65,6 @@ describe('ReplyRepositoryPostgres', () => {
           }),
         );
         expect(reply).toBeDefined();
-      });
-
-      it('should throw NotFoundError when the thread not found', async () => {
-        // Arrange
-        await UsersTableTestHelper.addUser({});
-        await ThreadsTableTestHelper.addThread({});
-        await CommentsTableTestHelper.addComment({});
-
-        const fakeIdGenerator = () => '123';
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(
-          pool,
-          fakeIdGenerator,
-        );
-
-        const newReply = new NewReply({
-          content: 'sebuah balasan',
-          owner: 'user-123',
-        });
-
-        // Action and Assert
-        await expect(
-          replyRepositoryPostgres.addReply(
-            newReply,
-            'thread-xxx',
-            'comment-123',
-          ),
-        ).rejects.toThrowError(NotFoundError);
-      });
-
-      it('should throw NotFoundError when the comment not found', async () => {
-        // Arrange
-        await UsersTableTestHelper.addUser({});
-        await ThreadsTableTestHelper.addThread({});
-        await CommentsTableTestHelper.addComment({});
-
-        const fakeIdGenerator = () => '123';
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(
-          pool,
-          fakeIdGenerator,
-        );
-
-        const newReply = new NewReply({
-          content: 'sebuah balasan',
-          owner: 'user-123',
-        });
-
-        // Action and Assert
-        await expect(
-          replyRepositoryPostgres.addReply(
-            newReply,
-            'thread-123',
-            'comment-xxx',
-          ),
-        ).rejects.toThrowError(NotFoundError);
       });
     });
 
@@ -145,7 +91,7 @@ describe('ReplyRepositoryPostgres', () => {
     });
 
     describe('verifyReplyPublisher function', () => {
-      it('should throw NotFoundError whn the reply not found', async () => {
+      it('should throw NotFoundError when the reply not found', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});
