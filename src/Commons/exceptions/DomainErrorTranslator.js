@@ -48,7 +48,7 @@ DomainErrorTranslator._directories = {
   'NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError(
     'tidak dapat mengirimkan balasan karena properti yang dibutuhkan tidak ada',
   ),
-  NEW_REPLY_NOT_MEET_DATA_TYPE_SPESIFICATION: new InvariantError(
+  'NEW_REPLY.NOT_MEET_DATA_TYPE_SPESIFICATION': new InvariantError(
     'tidak dapat mengirimkan balasan karena tipe data tidak sesuai',
   ),
 };
