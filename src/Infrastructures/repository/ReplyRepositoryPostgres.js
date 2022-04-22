@@ -51,20 +51,16 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     return new AddedReply(replyResult.rows.map(mapReplyDbToModel)[0]);
   }
 
-  async getRepliesByThreadIdAndCommentId(threadId, commentId) {
+  async getRepliesByThreadId(threadId) {
     const query = {
       text: `SELECT replies.id, replies.content, replies.date, users.username
       FROM replies
       INNER JOIN users ON replies.publisher = users.id
-      WHERE replies.thread_id = $1 AND replies.comment_id = $2`,
-      values: [threadId, commentId],
+      WHERE replies.thread_id = $1`,
+      values: [threadId],
     };
 
     const result = await this._pool.query(query);
-
-    if (!result.rowCount) {
-      throw new NotFoundError('Balasan tidak ditemukan');
-    }
 
     return result.rows;
   }

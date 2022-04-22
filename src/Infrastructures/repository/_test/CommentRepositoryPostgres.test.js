@@ -89,25 +89,6 @@ describe('CommentRepositoryPostgres', () => {
     });
 
     describe('getCommentsByThreadId function', () => {
-      it('should throw NotFoundError when comments not found', async () => {
-        // Arrange
-        await UsersTableTestHelper.addUser({});
-        await ThreadsTableTestHelper.addThread({});
-        await CommentsTableTestHelper.addComment({});
-        await CommentsTableTestHelper.addComment({ id: 'comment-234' });
-        await CommentsTableTestHelper.addComment({ id: 'comment-345' });
-
-        const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool,
-          {},
-        );
-
-        // Action and Assert
-        await expect(
-          commentRepositoryPostgres.getCommentsByThreadId('thread-xxx'),
-        ).rejects.toThrowError(NotFoundError);
-      });
-
       it('should return comments correctly', async () => {
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});

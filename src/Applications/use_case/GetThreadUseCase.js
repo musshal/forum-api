@@ -38,11 +38,11 @@ class GetThreadUseCase {
     }));
 
     const thread = {
-      ...threadResult,
+      ...threadResult[0],
       comments: [...comments],
     };
 
-    return new DetailThread(thread);
+    return thread;
   }
 }
 

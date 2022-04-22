@@ -1,4 +1,6 @@
 const pool = require('../../database/postgres/pool');
+const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ServerTesthelper = require('../../../../tests/ServerTestHelper');
@@ -11,6 +13,8 @@ describe('/threads endpoint', () => {
   });
 
   afterEach(async () => {
+    await RepliesTableTestHelper.cleanTable();
+    await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
     await ServerTesthelper.cleanTable();
@@ -44,6 +48,31 @@ describe('/threads endpoint', () => {
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.addedThread).toBeDefined();
       expect(responseJson.data.addedThread.owner).toEqual('user-123');
+    });
+  });
+
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and persisted detailThread', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({});
+      await CommentsTableTestHelper.addComment({});
+      await RepliesTableTestHelper.addReply({});
+
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: '/threads/thread-123',
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.thread).toBeDefined();
     });
   });
 });

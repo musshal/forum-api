@@ -13,14 +13,16 @@ describe('GetThreadUseCase', () => {
       threadId: 'thread-123',
     };
 
-    const retrievedThread = new DetailThread({
-      id: 'thread-123',
-      title: 'sebuah thread',
-      body: 'sebuah body thread',
-      date: '2022',
-      username: 'dicoding',
-      comments: [],
-    });
+    const retrievedThread = [
+      new DetailThread({
+        id: 'thread-123',
+        title: 'sebuah thread',
+        body: 'sebuah body thread',
+        date: '2022',
+        username: 'dicoding',
+        comments: [],
+      }),
+    ];
 
     const retrievedComments = [
       new DetailComment({
@@ -75,55 +77,40 @@ describe('GetThreadUseCase', () => {
       },
     ];
 
+    const {
+      commentId: commentIdReplyA,
+      isDelete: isDeleteReplyA,
+      ...filteredDetailReplyA
+    } = expectedDetailReplies[0];
+    const {
+      commentId: commentIdReplyB,
+      isDelete: isDeleteReplyB,
+      ...filteredDetailReplyB
+    } = expectedDetailReplies[1];
+
     const expectedDetailComments = [
       {
         ...retrievedComments[0],
-        replies: [
-          {
-            id: expectedDetailReplies[0].id,
-            content: expectedDetailReplies[0].content,
-            date: expectedDetailReplies[0].date,
-            username: expectedDetailReplies[0].username,
-          },
-        ],
+        replies: [filteredDetailReplyA],
         content: retrievedComments[0].isDelete
           ? '**komentar telah dihapus**'
           : retrievedComments[0].content,
       },
       {
         ...retrievedComments[1],
-        replies: [
-          {
-            id: expectedDetailReplies[1].id,
-            content: expectedDetailReplies[1].content,
-            date: expectedDetailReplies[1].date,
-            username: expectedDetailReplies[1].username,
-          },
-        ],
+        replies: [filteredDetailReplyB],
         content: retrievedComments[1].isDelete
           ? '**komentar telah dihapus**'
           : retrievedComments[1].content,
       },
     ];
 
+    const { isDelete: isDeleteCommentA, ...filteredDetailCommentA } = expectedDetailComments[0];
+    const { isDelete: isDeleteCommentB, ...filteredDetailCommentB } = expectedDetailComments[1];
+
     const expectedDetailThread = {
-      ...retrievedThread,
-      comments: [
-        {
-          id: expectedDetailComments[0].id,
-          username: expectedDetailComments[0].username,
-          date: expectedDetailComments[0].date,
-          replies: expectedDetailComments[0].replies,
-          content: expectedDetailComments[0].content,
-        },
-        {
-          id: expectedDetailComments[1].id,
-          username: expectedDetailComments[1].username,
-          date: expectedDetailComments[1].date,
-          replies: expectedDetailComments[1].replies,
-          content: expectedDetailComments[1].content,
-        },
-      ],
+      ...retrievedThread[0],
+      comments: [{ ...filteredDetailCommentA }, { ...filteredDetailCommentB }],
     };
 
     const mockThreadRepository = new ThreadRepository();
@@ -150,7 +137,7 @@ describe('GetThreadUseCase', () => {
     const useCaseResult = await getThreadUseCase.execute(useCaseParam);
 
     // Assert
-    expect(useCaseResult).toEqual(new DetailThread(expectedDetailThread));
+    expect(useCaseResult).toStrictEqual(expectedDetailThread);
     expect(mockThreadRepository.getThreadById).toBeCalledWith(
       useCaseParam.threadId,
     );

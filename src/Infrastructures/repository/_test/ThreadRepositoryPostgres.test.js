@@ -77,7 +77,7 @@ describe('ThreadRepositoryPostgres', () => {
         ).rejects.toThrowError(NotFoundError);
       });
 
-      it('should return detail thread when thread is found', async () => {
+      it('should return detail thread correctly', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
         await ThreadsTableTestHelper.addThread({});

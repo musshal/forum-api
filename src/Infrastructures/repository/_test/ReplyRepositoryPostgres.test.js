@@ -122,7 +122,7 @@ describe('ReplyRepositoryPostgres', () => {
       });
     });
 
-    describe('getRepliesByThreadIdAndCommentId function', () => {
+    describe('getRepliesByThreadId function', () => {
       it('should return replies correctly', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({});
@@ -135,53 +135,12 @@ describe('ReplyRepositoryPostgres', () => {
         const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         // Action
-        const replies = await replyRepositoryPostgres.getRepliesByThreadIdAndCommentId(
+        const replies = await replyRepositoryPostgres.getRepliesByThreadId(
           'thread-123',
-          'comment-123',
         );
 
         // Assert
         expect(replies).toHaveLength(3);
-      });
-
-      it('should throw NotFoundError when the replies not found due to the thread does not exist', async () => {
-        // Arrange
-        await UsersTableTestHelper.addUser({});
-        await ThreadsTableTestHelper.addThread({});
-        await CommentsTableTestHelper.addComment({});
-        await RepliesTableTestHelper.addReply({});
-        await RepliesTableTestHelper.addReply({ id: 'reply-234' });
-        await RepliesTableTestHelper.addReply({ id: 'reply-345' });
-
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
-
-        // Action and Assert
-        await expect(
-          replyRepositoryPostgres.getRepliesByThreadIdAndCommentId(
-            'thread-xxx',
-            'comment-123',
-          ),
-        ).rejects.toThrowError(NotFoundError);
-      });
-
-      it('should throw NotFoundError when the replies not found due to the comment does not exist', async () => {
-        // Arrange
-        await UsersTableTestHelper.addUser({});
-        await ThreadsTableTestHelper.addThread({});
-        await CommentsTableTestHelper.addComment({});
-        await RepliesTableTestHelper.addReply({});
-        await RepliesTableTestHelper.addReply({ id: 'reply-234' });
-        await RepliesTableTestHelper.addReply({ id: 'reply-345' });
-
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
-
-        // Action and Assert
-        await expect(
-          replyRepositoryPostgres.getRepliesByThreadIdAndCommentId(
-            'thread-123',
-            'comment-xxx',
-          ),
-        ).rejects.toThrowError(NotFoundError);
       });
     });
 
