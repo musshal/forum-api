@@ -31,6 +31,24 @@ class RepliesHandler {
 
     return response;
   }
+
+  async deleteReplyHandler(request, h) {
+    const { id } = request.auth.credentials;
+
+    const deleteReplyUseCase = this._container.getInstance(
+      DeleteReplyUseCase.name,
+    );
+
+    await deleteReplyUseCase.execute(request.params, id);
+
+    const response = h.response({
+      status: 'success',
+    });
+
+    response.code(200);
+
+    return response;
+  }
 }
 
 module.exports = RepliesHandler;
