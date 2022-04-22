@@ -6,7 +6,7 @@ class AddThreadUseCase {
   }
 
   async execute(useCasePayload) {
-    const newThread = new NewThread({ ...useCasePayload });
+    const newThread = new NewThread(useCasePayload);
 
     return this._threadRepository.addThread(newThread);
   }
