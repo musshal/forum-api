@@ -1,6 +1,6 @@
 const ReplyRepository = require('../../Domains/replies/ReplyRepository');
 const AddedReply = require('../../Domains/replies/entities/AddedReply');
-const { mapReplyDbToModel } = require('../../Commons/utils');
+const { mapReplyDbToModel, getMapReplyDbToModel } = require('../../Commons/utils');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 
@@ -27,16 +27,17 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
   async getRepliesByThreadId(threadId) {
     const query = {
-      text: `SELECT replies.id, replies.content, replies.date, users.username
+      text: `SELECT replies.id, replies.comment_id, replies.content, replies.date, replies.is_delete, users.username
       FROM replies
       INNER JOIN users ON replies.publisher = users.id
-      WHERE replies.thread_id = $1`,
+      WHERE replies.thread_id = $1
+      ORDER BY DATE ASC`,
       values: [threadId],
     };
 
     const result = await this._pool.query(query);
 
-    return result.rows;
+    return result.rows.map(getMapReplyDbToModel);
   }
 
   async verifyReplyPublisher(id, owner) {
