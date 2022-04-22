@@ -1,10 +1,10 @@
+const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
+const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
-const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
+const pool = require('../../database/postgres/pool');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
-const pool = require('../../database/postgres/pool');
-const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 
 describe('ThreadRepositoryPostgres', () => {

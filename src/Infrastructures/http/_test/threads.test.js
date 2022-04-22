@@ -1,11 +1,9 @@
 const pool = require('../../database/postgres/pool');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
-const container = require('../../container');
-const createServer = require('../createServer');
-const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
-const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ServerTesthelper = require('../../../../tests/ServerTestHelper');
+const createServer = require('../createServer');
+const container = require('../../container');
 
 describe('/threads endpoint', () => {
   afterAll(async () => {
@@ -13,8 +11,6 @@ describe('/threads endpoint', () => {
   });
 
   afterEach(async () => {
-    await RepliesTableTestHelper.cleanTable();
-    await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
     await ServerTesthelper.cleanTable();
@@ -28,7 +24,7 @@ describe('/threads endpoint', () => {
         body: 'sebuah body thread',
       };
 
-      const accessToken = await ServerTesthelper.getAccessToken();
+      const accessToken = await ServerTesthelper.getAccessToken({});
       const server = await createServer(container);
 
       // Action

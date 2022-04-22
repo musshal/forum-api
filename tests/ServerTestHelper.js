@@ -1,15 +1,18 @@
 /* istanbul ignore file */
+
 const Jwt = require('@hapi/jwt');
-const AuthenticationsTableTestHelper = require('./AuthenticationsTableTestHelper');
 const UsersTableTestHelper = require('./UsersTableTestHelper');
+const AuthenticationsTableTestHelper = require('./AuthenticationsTableTestHelper');
 
 const ServerTesthelper = {
-  async getAccessToken() {
+  async getAccessToken({
+    id = 'user-123',
+    username = 'dicoding',
+    password = 'secret',
+    fullname = 'Dicoding Indonesia',
+  }) {
     const payloadUser = {
-      id: 'user-123',
-      username: 'dicoding',
-      password: 'secret',
-      fullname: 'Dicoding Indonesia',
+      id, username, password, fullname,
     };
 
     await UsersTableTestHelper.addUser(payloadUser);

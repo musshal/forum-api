@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 
-const { mapThreadDbToModel } = require('../src/Commons/utils');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const ThreadsTableTestHelper = {
