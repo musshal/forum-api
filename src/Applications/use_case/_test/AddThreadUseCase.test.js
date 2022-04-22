@@ -9,13 +9,14 @@ describe('AddThreadUseCase', () => {
     const useCasePayload = {
       title: 'sebuah thread',
       body: 'sebuah body thread',
-      owner: 'user-123',
     };
+
+    const userIdFromAccessToken = 'user-123';
 
     const expectedAddedThread = new AddedThread({
       id: 'thread-123',
       title: useCasePayload.title,
-      owner: useCasePayload.owner,
+      owner: userIdFromAccessToken,
     });
 
     /** creating dependency of use case */
@@ -32,12 +33,16 @@ describe('AddThreadUseCase', () => {
     });
 
     // Action
-    const addedThread = await addThreadUseCase.execute(useCasePayload);
+    const addedThread = await addThreadUseCase.execute(
+      useCasePayload,
+      userIdFromAccessToken,
+    );
 
     // Assert
     expect(addedThread).toStrictEqual(expectedAddedThread);
     expect(mockThreadRepository.addThread).toBeCalledWith(
       new NewThread(useCasePayload),
+      userIdFromAccessToken,
     );
   });
 });

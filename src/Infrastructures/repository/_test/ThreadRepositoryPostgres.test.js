@@ -32,7 +32,6 @@ describe('ThreadRepositoryPostgres', () => {
         const newThread = new NewThread({
           title: 'sebuah thread',
           body: 'sebuah body thread',
-          owner: 'user-123',
         });
 
         const fakeIdGenerator = () => '123';
@@ -44,7 +43,7 @@ describe('ThreadRepositoryPostgres', () => {
         // Action
         const addedThread = await threadRepositoryPostgres.addThread(
           newThread,
-          'thread-123',
+          'user-123',
         );
 
         // Assert
