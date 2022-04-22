@@ -1,8 +1,8 @@
-const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
-const NotFoundError = require('../../Commons/exceptions/NotFoundError');
-const { mapReplyDbToModel } = require('../../Commons/utils');
-const AddedReply = require('../../Domains/replies/entities/AddedReply');
 const ReplyRepository = require('../../Domains/replies/ReplyRepository');
+const AddedReply = require('../../Domains/replies/entities/AddedReply');
+const { mapReplyDbToModel } = require('../../Commons/utils');
+const NotFoundError = require('../../Commons/exceptions/NotFoundError');
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 
 class ReplyRepositoryPostgres extends ReplyRepository {
   constructor(pool, idGenerator) {
