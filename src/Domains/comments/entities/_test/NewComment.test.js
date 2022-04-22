@@ -15,7 +15,6 @@ describe('NewComment entities', () => {
     // Arrange
     const payload = {
       content: {},
-      owner: 2022,
     };
 
     // Action and Assert
@@ -28,7 +27,6 @@ describe('NewComment entities', () => {
     // Arrange
     const payload = {
       content: 'sebuah comment',
-      owner: 'user-123',
     };
 
     // Action
@@ -36,6 +34,5 @@ describe('NewComment entities', () => {
 
     // Assert
     expect(newComment.content).toEqual(payload.content);
-    expect(newComment.owner).toEqual(payload.owner);
   });
 });

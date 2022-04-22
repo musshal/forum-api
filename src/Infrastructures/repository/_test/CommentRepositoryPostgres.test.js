@@ -35,7 +35,6 @@ describe('CommentRepositoryPostgres', () => {
 
         const newComment = new NewComment({
           content: 'sebuah komentar',
-          owner: 'user-123',
         });
 
         const fakeIdGenerator = () => '123'; // stub!
@@ -48,6 +47,7 @@ describe('CommentRepositoryPostgres', () => {
         const addedComment = await commentRepositoryPostgres.addComment(
           newComment,
           'thread-123',
+          'user-123',
         );
 
         // Assert
@@ -63,28 +63,6 @@ describe('CommentRepositoryPostgres', () => {
           }),
         );
         expect(comment).toBeDefined();
-      });
-
-      it('should throw NotFoundError when thread not found', async () => {
-        // Arrange
-        await UsersTableTestHelper.addUser({});
-        await ThreadsTableTestHelper.addThread({});
-
-        const fakeIdGenerator = () => '123';
-        const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool,
-          fakeIdGenerator,
-        );
-
-        const newComment = new NewComment({
-          content: 'sebuah komentar',
-          owner: 'user-123',
-        });
-
-        // Action and Assert
-        await expect(
-          commentRepositoryPostgres.addComment(newComment, 'thread-xxx'),
-        ).rejects.toThrowError(NotFoundError);
       });
     });
 
