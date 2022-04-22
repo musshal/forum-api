@@ -1,11 +1,11 @@
-const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
-const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
-const NewComment = require('../../../Domains/comments/entities/NewComment');
-const AddedComment = require('../../../Domains/comments/entities/AddedComment');
-const pool = require('../../database/postgres/pool');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const pool = require('../../database/postgres/pool');
+const NewComment = require('../../../Domains/comments/entities/NewComment');
+const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 
