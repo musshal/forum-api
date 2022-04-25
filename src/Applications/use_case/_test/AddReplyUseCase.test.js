@@ -31,15 +31,15 @@ describe('AddReplyUseCase', () => {
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
-    mockThreadRepository.verifyExistingThread = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(useCaseParam.threadId));
-    mockCommentRepository.verifyExistingComment = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(useCaseParam.commentId));
-    mockReplyRepository.addReply = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(expectedAddedReply));
+    mockThreadRepository.verifyExistingThread = jest.fn(() => Promise.resolve(useCaseParam.threadId));
+    mockCommentRepository.verifyExistingComment = jest.fn(() => Promise.resolve(useCaseParam.commentId));
+    mockReplyRepository.addReply = jest.fn(() => Promise.resolve(
+      new AddedReply({
+        id: 'reply-123',
+        content: useCasePayload.content,
+        owner: userIdFromAccessToken,
+      }),
+    ));
 
     /** creating use case instance */
     const addReplyUseCase = new AddReplyUseCase({

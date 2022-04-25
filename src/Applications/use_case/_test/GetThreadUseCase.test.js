@@ -62,7 +62,7 @@ describe('GetThreadUseCase', () => {
       }),
     ];
 
-    const expectedDetailReplies = [
+    const detailReplies = [
       {
         ...retrievedReplies[0],
         content: retrievedReplies[0].isDelete
@@ -81,14 +81,14 @@ describe('GetThreadUseCase', () => {
       commentId: commentIdReplyA,
       isDelete: isDeleteReplyA,
       ...filteredDetailReplyA
-    } = expectedDetailReplies[0];
+    } = detailReplies[0];
     const {
       commentId: commentIdReplyB,
       isDelete: isDeleteReplyB,
       ...filteredDetailReplyB
-    } = expectedDetailReplies[1];
+    } = detailReplies[1];
 
-    const expectedDetailComments = [
+    const detailComments = [
       {
         ...retrievedComments[0],
         replies: [filteredDetailReplyA],
@@ -105,8 +105,8 @@ describe('GetThreadUseCase', () => {
       },
     ];
 
-    const { isDelete: isDeleteCommentA, ...filteredDetailCommentA } = expectedDetailComments[0];
-    const { isDelete: isDeleteCommentB, ...filteredDetailCommentB } = expectedDetailComments[1];
+    const { isDelete: isDeleteCommentA, ...filteredDetailCommentA } = detailComments[0];
+    const { isDelete: isDeleteCommentB, ...filteredDetailCommentB } = detailComments[1];
 
     const expectedDetailThread = {
       ...retrievedThread[0],
@@ -117,15 +117,9 @@ describe('GetThreadUseCase', () => {
     const mockCommentRepository = new CommentRepository();
     const mockReplyRepository = new ReplyRepository();
 
-    mockThreadRepository.getThreadById = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(retrievedThread));
-    mockCommentRepository.getCommentsByThreadId = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(expectedDetailComments));
-    mockReplyRepository.getRepliesByThreadId = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(expectedDetailReplies));
+    mockThreadRepository.getThreadById = jest.fn(() => Promise.resolve(retrievedThread));
+    mockCommentRepository.getCommentsByThreadId = jest.fn(() => Promise.resolve(detailComments));
+    mockReplyRepository.getRepliesByThreadId = jest.fn(() => Promise.resolve(detailReplies));
 
     const getThreadUseCase = new GetThreadUseCase({
       threadRepository: mockThreadRepository,
