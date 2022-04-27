@@ -1,6 +1,5 @@
 const autoBind = require('auto-bind-es5');
-const AddThreadUseCase = require('../../../../Applications/use_case/AddThreadUseCase');
-const GetThreadUseCase = require('../../../../Applications/use_case/GetThreadUseCase');
+const ThreadUseCase = require('../../../../Applications/use_case/ThreadUseCase');
 
 class ThreadsHandler {
   constructor(container) {
@@ -12,8 +11,8 @@ class ThreadsHandler {
   async postThreadHandler(request, h) {
     const { id } = request.auth.credentials;
 
-    const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
-    const addedThread = await addThreadUseCase.execute(request.payload, id);
+    const threadUseCase = this._container.getInstance(ThreadUseCase.name);
+    const addedThread = await threadUseCase.addThread(request.payload, id);
 
     const response = h.response({
       status: 'success',
@@ -32,8 +31,8 @@ class ThreadsHandler {
 
     const useCaseParam = { threadId: id };
 
-    const getThreadUseCase = this._container.getInstance(GetThreadUseCase.name);
-    const thread = await getThreadUseCase.execute(useCaseParam);
+    const threadUseCase = this._container.getInstance(ThreadUseCase.name);
+    const thread = await threadUseCase.getThread(useCaseParam);
 
     const response = h.response({
       status: 'success',

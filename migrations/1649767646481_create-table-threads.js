@@ -9,6 +9,8 @@ exports.up = (pgm) => {
     publisher: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: 'users',
+      onDelete: 'CASCADE',
     },
     title: {
       type: 'TEXT',
@@ -24,15 +26,8 @@ exports.up = (pgm) => {
       default: pgm.func('current_timestamp'),
     },
   });
-
-  pgm.addConstraint(
-    'threads',
-    'fk_threads.publisher_users.id',
-    'FOREIGN KEY(publisher) REFERENCES users(id) ON DELETE CASCADE',
-  );
 };
 
 exports.down = (pgm) => {
-  pgm.dropConstraint('threads', 'fk_threads.publisher_users.id');
   pgm.dropTable('threads');
 };

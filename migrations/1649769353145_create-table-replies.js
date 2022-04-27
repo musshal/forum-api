@@ -9,14 +9,20 @@ exports.up = (pgm) => {
     thread_id: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: 'threads',
+      onDelete: 'CASCADE',
     },
     comment_id: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: 'comments',
+      onDelete: 'CASCADE',
     },
     publisher: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: 'users',
+      onDelete: 'CASCADE',
     },
     content: {
       type: 'TEXT',
@@ -33,22 +39,8 @@ exports.up = (pgm) => {
       default: false,
     },
   });
-
-  pgm.addConstraint(
-    'replies',
-    'fk_replies.comment_id_comments.id',
-    'FOREIGN KEY(comment_id) REFERENCES comments(id) ON DELETE CASCADE',
-  );
-
-  pgm.addConstraint(
-    'replies',
-    'fk_replies.publisher_users.id',
-    'FOREIGN KEY(publisher) REFERENCES users(id) ON DELETE CASCADE',
-  );
 };
 
 exports.down = (pgm) => {
-  pgm.dropConstraint('replies', 'fk_replies.comment_id_comments.id');
-  pgm.dropConstraint('replies', 'fk_replies.publisher_users.id');
   pgm.dropTable('replies');
 };
