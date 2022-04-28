@@ -23,7 +23,6 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          POSTGRES_HOST: ${{ secrets.PGHOST_TEST }}
           POSTGRES_USER: ${{ secrets.PGUSER_TEST }}
           POSTGRES_DB: ${{ secrets.PGDATABASE_TEST }}
           POSTGRES_PASSWORD: ${{ secrets.PGPASSWORD_TEST }}
