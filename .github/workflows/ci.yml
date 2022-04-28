@@ -4,7 +4,7 @@ on:
   push
   # pull_request:
   #   branches:
-  #     - master
+  #     - main
 
 jobs:
   test:
@@ -23,9 +23,7 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          POSTGRES_USER: ${{ secrets.PGUSER_TEST }}
-          POSTGRES_DB: ${{ secrets.PGDATABASE_TEST }}
-          POSTGRES_PASSWORD: ${{ secrets.PGPASSWORD_TEST }}
+          POSTGRES_PASSWORD: postgres
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -49,15 +47,15 @@ jobs:
           npm run test
         env:
           CI: true
-          PGHOST_TEST: ${{ secrets.PGHOST_TEST }}
-          PGUSER_TEST: ${{ secrets.PGUSER_TEST }}
-          PGDATABASE_TEST: ${{ secrets.PGDATABASE_TEST }}
-          PGPASSWORD_TEST: ${{ secrets.PGPASSWORD_TEST }}
-          PGPORT_TEST: ${{ secrets.PGPORT_TEST }}
-          PGHOST: ${{ secrets.PGHOST_TEST }}
-          PGUSER: ${{ secrets.PGUSER_TEST }}
-          PGDATABASE: ${{ secrets.PGDATABASE_TEST }}
-          PGPASSWORD: ${{ secrets.PGPASSWORD_TEST }}
-          PGPORT: ${{ secrets.PGPORT_TEST }}
-          ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
-          REFRESH_TOKEN_KEY: ${{ secrets.REFRESH_TOKEN_KEY }}
+            PGHOST_TEST: ${{ secrets.PGHOST_TEST }}
+            PGUSER_TEST: ${{ secrets.PGUSER_TEST }}
+            PGDATABASE_TEST: ${{ secrets.PGDATABASE_TEST }}
+            PGPASSWORD_TEST: ${{ secrets.PGPASSWORD_TEST }}
+            PGPORT_TEST: ${{ secrets.PGPORT_TEST }}
+            PGHOST: ${{ secrets.PGHOST_TEST }}
+            PGUSER: ${{ secrets.PGUSER_TEST }}
+            PGDATABASE: ${{ secrets.PGDATABASE_TEST }}
+            PGPASSWORD: ${{ secrets.PGPASSWORD_TEST }}
+            PGPORT: ${{ secrets.PGPORT_TEST }}
+            ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
+            REFRESH_TOKEN_KEY: ${{ secrets.REFRESH_TOKEN_KEY }}
