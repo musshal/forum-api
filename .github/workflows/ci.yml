@@ -17,17 +17,15 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_USER: ${{ secrets.PGUSER_TEST }}
+          POSTGRES_HOST: ${{ secrets.PGHOST_TEST }}
           POSTGRES_PASSWORD: ${{ secrets.PGPASSWORD_TEST }}
-          POSTGRES_DB: ${{ secrets.PGDATABASE_TEST }}
           POSTGRES_PORT: ${{ secrets.PGPORT_TEST }}
+          POSTGRES_USER: ${{ secrets.PGUSER_TEST }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 5432:5432
 
     steps:
       - uses: actions/checkout@v2
@@ -35,6 +33,8 @@ jobs:
         run: |
           apt update
           apt install --yes postgresql-client
+      - name: Setup database
+        run: psql -h postgres -U ${{ secrets.PGUSER_TEST }} -c 'CREATE DATABASE "forumapi"; CREATE DATABASE "forumapi_test";'
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
