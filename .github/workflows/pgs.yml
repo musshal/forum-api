@@ -17,11 +17,8 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          PGHOST_TEST: localhost
-          PGUSER_TEST: developer
-          PGDATABASE_TEST: forumapi_test
-          PGPASSWORD_TEST: supersecretpassword
-          PGPORT_TEST: 5432
+          POSTGRES_USER: developer
+          POSTGRES_PASSWORD: supersecretpassword
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready

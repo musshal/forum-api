@@ -1,26 +1,13 @@
 name: Continuous Integration
 
-# on:
-#   pull_request:
-#     branches:
-#       - main
+on:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: postgres
-        # Provide the password for postgres
-        env:
-          PGHOST_TEST: localhost
-          PGUSER_TEST: developer
-          PGDATABASE_TEST: forumapi_test
-          PGPASSWORD_TEST: supersecretpassword
-          PGPORT_TEST: 5432
 
     strategy:
       matrix:
