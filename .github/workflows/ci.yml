@@ -45,8 +45,8 @@ jobs:
       - name: npm install migrate and test
         run: |
           npm install
-          npm run migrate up
-          npm run test
+          npm run migrate:test up
+          npm run test:watch
         env:
           CI: true
           PGHOST_TEST: ${{ secrets.PGHOST_TEST }}
