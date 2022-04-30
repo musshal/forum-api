@@ -115,6 +115,10 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
 
     it('should response 401 when request payload did not contain auth', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({});
+      await CommentsTableTestHelper.addComment({});
+
       const requestPayload = {
         content: 'sebuah balasan',
       };
@@ -192,6 +196,11 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
 
     it('should response 401 when request payload did not contain auth', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({});
+      await CommentsTableTestHelper.addComment({});
+      await RepliesTablerTestHelper.addReply({});
+
       const server = await createServer(container);
 
       const response = await server.inject({
