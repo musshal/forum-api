@@ -6,6 +6,7 @@ const DetailReply = require('../../../Domains/replies/entities/DetailReply');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
+const LikeRepository = require('../../../Domains/likes/LikeRepository');
 const ThreadUseCase = require('../ThreadUseCase');
 
 describe('ThreadUseCase', () => {
@@ -86,6 +87,7 @@ describe('ThreadUseCase', () => {
           date: '2022',
           replies: [],
           content: 'sebuah comment A',
+          likeCount: 0,
           isDelete: true,
         }),
         new DetailComment({
@@ -94,6 +96,7 @@ describe('ThreadUseCase', () => {
           date: '2022',
           replies: [],
           content: 'sebuah comment B',
+          likeCount: 0,
           isDelete: false,
         }),
       ];
@@ -115,6 +118,18 @@ describe('ThreadUseCase', () => {
           username: 'user D',
           isDelete: true,
         }),
+      ];
+
+      const retrievedLikes = [
+        {
+          id: 'like-123', threadId: 'thread-123', commentId: 'comment-123', userId: 'user-123',
+        },
+        {
+          id: 'like-234', threadId: 'thread-123', commentId: 'comment-123', userId: 'user-234',
+        },
+        {
+          id: 'like-345', threadId: 'thread-123', commentId: 'comment-234', userId: 'user-345',
+        },
       ];
 
       const detailReplies = [
@@ -150,6 +165,7 @@ describe('ThreadUseCase', () => {
           content: retrievedComments[0].isDelete
             ? '**komentar telah dihapus**'
             : retrievedComments[0].content,
+          likeCount: retrievedLikes.filter((like) => like.commentId === retrievedComments[0].id).length,
         },
         {
           ...retrievedComments[1],
@@ -157,6 +173,7 @@ describe('ThreadUseCase', () => {
           content: retrievedComments[1].isDelete
             ? '**komentar telah dihapus**'
             : retrievedComments[1].content,
+          likeCount: retrievedLikes.filter((like) => like.commentId === retrievedComments[1].id).length,
         },
       ];
 
@@ -174,15 +191,18 @@ describe('ThreadUseCase', () => {
       const mockThreadRepository = new ThreadRepository();
       const mockCommentRepository = new CommentRepository();
       const mockReplyRepository = new ReplyRepository();
+      const mockLikeRepository = new LikeRepository();
 
       mockThreadRepository.getThreadById = jest.fn(() => Promise.resolve(retrievedThread));
       mockCommentRepository.getCommentsByThreadId = jest.fn(() => Promise.resolve(detailComments));
       mockReplyRepository.getRepliesByThreadId = jest.fn(() => Promise.resolve(detailReplies));
+      mockLikeRepository.getLikesByThreadId = jest.fn(() => Promise.resolve(retrievedLikes));
 
       const threadUseCase = new ThreadUseCase({
         threadRepository: mockThreadRepository,
         commentRepository: mockCommentRepository,
         replyRepository: mockReplyRepository,
+        likeRepository: mockLikeRepository,
       });
 
       // Action
@@ -199,6 +219,7 @@ describe('ThreadUseCase', () => {
       expect(mockReplyRepository.getRepliesByThreadId).toBeCalledWith(
         useCaseParam.threadId,
       );
+      expect(mockLikeRepository.getLikesByThreadId).toBeCalledWith(useCaseParam.threadId);
     });
   });
 });

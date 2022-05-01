@@ -110,6 +110,9 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
     it('should response 401 when request payload did not contain auth', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({});
+
       const requestPayload = {
         content: 'sebuah komentar',
       };
@@ -185,6 +188,10 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
     it('should response 401 when request payload did not contain auth', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({});
+      await CommentsTableTestHelper.addComment({});
+
       const server = await createServer(container);
 
       // Action

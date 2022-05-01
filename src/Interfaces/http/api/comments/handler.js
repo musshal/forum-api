@@ -1,6 +1,5 @@
 const autoBind = require('auto-bind-es5');
-const AddCommentUseCase = require('../../../../Applications/use_case/AddCommentUseCase');
-const DeleteCommentUseCase = require('../../../../Applications/use_case/DeleteCommentUseCase');
+const CommentUseCase = require('../../../../Applications/use_case/CommentUseCase');
 
 class CommentsHandler {
   constructor(container) {
@@ -12,11 +11,11 @@ class CommentsHandler {
   async postCommentHandler(request, h) {
     const { id } = request.auth.credentials;
 
-    const addCommentUseCase = this._container.getInstance(
-      AddCommentUseCase.name,
+    const commentUseCase = this._container.getInstance(
+      CommentUseCase.name,
     );
 
-    const addedComment = await addCommentUseCase.execute(
+    const addedComment = await commentUseCase.addComment(
       request.params,
       request.payload,
       id,
@@ -37,11 +36,11 @@ class CommentsHandler {
   async deleteCommentHandler(request, h) {
     const { id } = request.auth.credentials;
 
-    const deleteCommentUseCase = this._container.getInstance(
-      DeleteCommentUseCase.name,
+    const commentUseCase = this._container.getInstance(
+      CommentUseCase.name,
     );
 
-    await deleteCommentUseCase.execute(request.params, id);
+    await commentUseCase.deleteComment(request.params, id);
 
     const response = h.response({
       status: 'success',

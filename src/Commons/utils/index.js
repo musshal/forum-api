@@ -31,7 +31,12 @@ const mapReplyDbToModel = ({ id, content, publisher }) => ({
 });
 
 const getMapReplyDbToModel = ({
-  id, comment_id, content, date, username, is_delete,
+  id,
+  comment_id,
+  content,
+  date,
+  username,
+  is_delete,
 }) => ({
   id,
   commentId: comment_id,
@@ -41,10 +46,20 @@ const getMapReplyDbToModel = ({
   isDelete: is_delete,
 });
 
+const getMapLikeDbToModel = ({
+  id, thread_id, comment_id, user_id,
+}) => ({
+  id,
+  threadId: thread_id,
+  commentId: comment_id,
+  userId: user_id,
+});
+
 module.exports = {
   mapThreadDbToModel,
   mapCommentDbToModel,
   getMapCommentDbToModel,
   mapReplyDbToModel,
   getMapReplyDbToModel,
+  getMapLikeDbToModel,
 };

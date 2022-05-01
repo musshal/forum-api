@@ -1,13 +1,13 @@
 const NewReply = require('../../Domains/replies/entities/NewReply');
 
-class AddReplyUseCase {
+class ReplyUseCase {
   constructor({ replyRepository, threadRepository, commentRepository }) {
     this._replyRepository = replyRepository;
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
   }
 
-  async execute(useCaseParam, useCasePayload, userIdFromAccesToken) {
+  async addReply(useCaseParam, useCasePayload, userIdFromAccesToken) {
     const { threadId, commentId } = useCaseParam;
 
     await this._threadRepository.verifyExistingThread(threadId);
@@ -22,6 +22,20 @@ class AddReplyUseCase {
       userIdFromAccesToken,
     );
   }
+
+  async deleteReply(useCaseParam, userIdFromAccesToken) {
+    const { threadId, commentId, replyId } = useCaseParam;
+
+    await this._threadRepository.verifyExistingThread(threadId);
+    await this._commentRepository.verifyExistingComment(commentId);
+    await this._replyRepository.verifyExistingReply(replyId);
+    await this._replyRepository.verifyReplyPublisher(
+      replyId,
+      userIdFromAccesToken,
+    );
+
+    return this._replyRepository.deleteReplyById(replyId);
+  }
 }
 
-module.exports = AddReplyUseCase;
+module.exports = ReplyUseCase;

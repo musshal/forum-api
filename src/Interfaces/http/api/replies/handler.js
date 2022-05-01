@@ -1,6 +1,5 @@
 const autoBind = require('auto-bind-es5');
-const AddReplyUseCase = require('../../../../Applications/use_case/AddReplyUseCase');
-const DeleteReplyUseCase = require('../../../../Applications/use_case/DeleteReplyUseCase');
+const ReplyUseCase = require('../../../../Applications/use_case/ReplyUseCase');
 
 class RepliesHandler {
   constructor(container) {
@@ -12,9 +11,9 @@ class RepliesHandler {
   async postReplyHandler(request, h) {
     const { id } = request.auth.credentials;
 
-    const addReplyUseCase = this._container.getInstance(AddReplyUseCase.name);
+    const replyUseCase = this._container.getInstance(ReplyUseCase.name);
 
-    const addedReply = await addReplyUseCase.execute(
+    const addedReply = await replyUseCase.addReply(
       request.params,
       request.payload,
       id,
@@ -35,11 +34,11 @@ class RepliesHandler {
   async deleteReplyHandler(request, h) {
     const { id } = request.auth.credentials;
 
-    const deleteReplyUseCase = this._container.getInstance(
-      DeleteReplyUseCase.name,
+    const replyUseCase = this._container.getInstance(
+      ReplyUseCase.name,
     );
 
-    await deleteReplyUseCase.execute(request.params, id);
+    await replyUseCase.deleteReply(request.params, id);
 
     const response = h.response({
       status: 'success',

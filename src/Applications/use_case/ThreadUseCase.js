@@ -1,10 +1,13 @@
 const NewThread = require('../../Domains/threads/entities/NewThread');
 
 class ThreadUseCase {
-  constructor({ threadRepository, commentRepository, replyRepository }) {
+  constructor({
+    threadRepository, commentRepository, replyRepository, likeRepository,
+  }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
+    this._likeRepository = likeRepository;
   }
 
   async addThread(useCasePayload, userIdFromAccessToken) {
@@ -23,6 +26,9 @@ class ThreadUseCase {
     const repliesResult = await this._replyRepository.getRepliesByThreadId(
       threadId,
     );
+    const likesResult = await this._likeRepository.getLikesByThreadId(threadId);
+
+    const likeCount = (commentId) => (likesResult.filter((like) => like.commentId === commentId)).length;
 
     const replies = (commentId) => repliesResult
       .filter((reply) => reply.commentId === commentId)
@@ -41,6 +47,7 @@ class ThreadUseCase {
       content: comment.isDelete
         ? '**komentar telah dihapus**'
         : comment.content,
+      likeCount: likeCount(comment.id),
     }));
 
     const thread = {
