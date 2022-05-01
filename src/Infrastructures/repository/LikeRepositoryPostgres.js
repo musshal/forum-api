@@ -1,4 +1,5 @@
 const LikeRepository = require('../../Domains/likes/LikeRepository');
+const { getMapLikeDbToModel } = require('../../Commons/utils');
 
 class LikeRepositoryPostgres extends LikeRepository {
   constructor(pool, idGenerator) {
@@ -40,6 +41,17 @@ class LikeRepositoryPostgres extends LikeRepository {
     const result = await this._pool.query(query);
 
     return result.rows;
+  }
+
+  async getLikesByThreadId(threadId) {
+    const query = {
+      text: 'SELECT * FROM likes WHERE thread_id = $1',
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows.map(getMapLikeDbToModel);
   }
 }
 

@@ -92,5 +92,27 @@ describe('LikeRepositoryPostgres', () => {
         expect(like).toHaveLength(1);
       });
     });
+
+    describe('getLikesByThreadId function', () => {
+      it('should return likes correctly', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({});
+        await ThreadsTableTestHelper.addThread({});
+        await CommentsTableTestHelper.addComment({});
+        await LikesTableTestHelper.addLike({});
+        await LikesTableTestHelper.addLike({ id: 'like-234' });
+        await LikesTableTestHelper.addLike({ id: 'like-345' });
+
+        const likeRepositoryPostgres = new LikeRepositoryPostgres(pool, {});
+
+        // Action
+        const likes = await likeRepositoryPostgres.getLikesByThreadId(
+          'thread-123',
+        );
+
+        // Assert
+        expect(likes).toHaveLength(3);
+      });
+    });
   });
 });

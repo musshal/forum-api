@@ -15,5 +15,8 @@ describe('LikeRepository interface', () => {
     await expect(likeRepository.getLike('')).rejects.toThrowError(
       'LIKE_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
+    await expect(likeRepository.getLikesByThreadId('')).rejects.toThrowError(
+      'LIKE_REPOSITORY.METHOD_NOT_IMPLEMENTED',
+    );
   });
 });
