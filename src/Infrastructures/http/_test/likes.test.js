@@ -42,7 +42,7 @@ describe('/threads/{threadId}/comments/{commentId}/likes endpoint', () => {
       // Assert
       const responseJson = JSON.parse(response.payload);
 
-      expect(response.statusCode).toEqual(404);
+      expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
     });
 
